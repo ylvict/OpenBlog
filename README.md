@@ -50,7 +50,8 @@
 ### Blob数据存储(图片/文档)
 * FileSystem
 * Mongodb GridFS
-
+## 打包发布
+本地通过docker build命令手动打包, 完成打包之后手动上传到公网仓库
 ## 部署
 新版本发布会发布公共仓库的镜像，在安装有docker上可以直接通过docker run运行
 
