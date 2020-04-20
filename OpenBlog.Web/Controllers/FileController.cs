@@ -29,11 +29,21 @@ namespace OpenBlog.Web.Controllers
             _fileSizeLimit = 1 * 1024 * 1024 * 1024;
             _defaultFormOptions = formOptions?.Value ?? throw new ArgumentNullException(nameof(formOptions));
         }
-
+        [HttpPost, Route("stream_upload")]
+        [DisableFormValueModelBinding]
+        [Consumes("application/octet-stream")]
+        public async Task<IActionResult> OnStreamPostUploadAsync(IFormFile file)
+        {
+            using (var fs = new FileStream($"{Guid.NewGuid()}", FileMode.OpenOrCreate | FileMode.Append))
+            {
+                await Request.Body.CopyToAsync(fs);
+            }
+            return Ok();
+        }
 
         [HttpPost, Route("upload")]
         [DisableFormValueModelBinding]
-        public async Task<IActionResult> OnPostUploadAsync()
+        public async Task<IActionResult> OnMulipartPostUploadAsync(IFormFile file)
         {
             if (!MultipartRequestHelper.IsMultipartContentType(Request.ContentType))
             {
