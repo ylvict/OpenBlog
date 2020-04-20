@@ -11,5 +11,10 @@ namespace OpenBlog.Web.Areas.Admin.Controllers
         {
             _logger = logger;
         }
+
+        public IActionResult Index()
+        {
+            return View();
+        }
     }
 }

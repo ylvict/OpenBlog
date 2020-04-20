@@ -3,17 +3,19 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29806.167
 MinimumVisualStudioVersion = 15.0.26124.0
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenBlog.DomainModels", "OpenBlog.DomainModels\OpenBlog.DomainModels.csproj", "{10D02E90-E3AF-44E7-B9FE-9A670C288092}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenBlog.DomainModels", "OpenBlog.DomainModels\OpenBlog.DomainModels.csproj", "{10D02E90-E3AF-44E7-B9FE-9A670C288092}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenBlog.Repository.Mongo", "OpenBlog.Repository.Mongo\OpenBlog.Repository.Mongo.csproj", "{DF5EF494-337F-4BAB-8F50-6E99ADB6DFE5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenBlog.Repository.Mongo", "OpenBlog.Repository.Mongo\OpenBlog.Repository.Mongo.csproj", "{DF5EF494-337F-4BAB-8F50-6E99ADB6DFE5}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenBlog.Web", "OpenBlog.Web\OpenBlog.Web.csproj", "{61CF979E-E46F-4E0A-A08A-C993E25B84DA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenBlog.MongoRepositoryTest", "OpenBlog.MongoRepositoryTest\OpenBlog.MongoRepositoryTest.csproj", "{A396C1EA-8A12-4914-BE4C-01CE3857AFE8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenBlog.MongoRepositoryTest", "OpenBlog.MongoRepositoryTest\OpenBlog.MongoRepositoryTest.csproj", "{A396C1EA-8A12-4914-BE4C-01CE3857AFE8}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Repository", "Repository", "{4954CD7A-8CE4-4C46-9ADE-27C5C155D845}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenBlog.UnitTest", "OpenBlog.UnitTest\OpenBlog.UnitTest.csproj", "{00383CD4-99D5-463D-A60F-DA7B5AAB0861}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenBlog.UnitTest", "OpenBlog.UnitTest\OpenBlog.UnitTest.csproj", "{00383CD4-99D5-463D-A60F-DA7B5AAB0861}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenBlog.IngtTest", "OpenBlog.IngtTest\OpenBlog.IngtTest.csproj", "{7940BEDB-DE67-43E2-B808-E9B52D61B3F7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -85,6 +87,18 @@ Global
 		{00383CD4-99D5-463D-A60F-DA7B5AAB0861}.Release|x64.Build.0 = Release|Any CPU
 		{00383CD4-99D5-463D-A60F-DA7B5AAB0861}.Release|x86.ActiveCfg = Release|Any CPU
 		{00383CD4-99D5-463D-A60F-DA7B5AAB0861}.Release|x86.Build.0 = Release|Any CPU
+		{7940BEDB-DE67-43E2-B808-E9B52D61B3F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7940BEDB-DE67-43E2-B808-E9B52D61B3F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7940BEDB-DE67-43E2-B808-E9B52D61B3F7}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{7940BEDB-DE67-43E2-B808-E9B52D61B3F7}.Debug|x64.Build.0 = Debug|Any CPU
+		{7940BEDB-DE67-43E2-B808-E9B52D61B3F7}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{7940BEDB-DE67-43E2-B808-E9B52D61B3F7}.Debug|x86.Build.0 = Debug|Any CPU
+		{7940BEDB-DE67-43E2-B808-E9B52D61B3F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7940BEDB-DE67-43E2-B808-E9B52D61B3F7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7940BEDB-DE67-43E2-B808-E9B52D61B3F7}.Release|x64.ActiveCfg = Release|Any CPU
+		{7940BEDB-DE67-43E2-B808-E9B52D61B3F7}.Release|x64.Build.0 = Release|Any CPU
+		{7940BEDB-DE67-43E2-B808-E9B52D61B3F7}.Release|x86.ActiveCfg = Release|Any CPU
+		{7940BEDB-DE67-43E2-B808-E9B52D61B3F7}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
