@@ -26,6 +26,15 @@
                         </li>
                     </ul>
                 </div>
+                @if (UserSession.IsAuthenticated)
+                {
+                    <span>@UserSession.DisplayName</span>
+                    <a asp-controller="Account" asp-action="Logout">Logout</a>
+                }
+                else
+                {
+                    <a asp-controller="Account" asp-action="Login">Login</a>
+                }
             </div>
         </nav>
     </header>

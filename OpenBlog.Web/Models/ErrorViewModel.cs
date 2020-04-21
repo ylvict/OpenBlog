@@ -1,5 +1,3 @@
-using System;
-
 namespace OpenBlog.Web.Models
 {
     public class ErrorViewModel

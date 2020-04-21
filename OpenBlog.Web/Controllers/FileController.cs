@@ -5,20 +5,19 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Options;
 using Microsoft.Net.Http.Headers;
+using OpenBlog.Web.Models;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.IO;
 using System.Net;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace OpenBlog.Web.Controllers
 {
     [Route("api/file")]
     [ApiController]
-    public class FileController : ControllerBase
+    public class FileController : BlogWebControllerBase
     {
         private readonly FormOptions _defaultFormOptions;
         private readonly long _fileSizeLimit;
@@ -43,7 +42,7 @@ namespace OpenBlog.Web.Controllers
 
         [HttpPost, Route("upload")]
         [DisableFormValueModelBinding]
-        public async Task<IActionResult> OnMulipartPostUploadAsync(IFormFile file)
+        public async Task<IActionResult> OnMulipartPostUploadAsync()
         {
             if (!MultipartRequestHelper.IsMultipartContentType(Request.ContentType))
             {
@@ -189,50 +188,7 @@ namespace OpenBlog.Web.Controllers
                     fs.Write(item.Value, 0, item.Value.Length);
                 }
             }
-
-            //_context.File.Add(file);
-            //await _context.SaveChangesAsync();
-
-            //return Created(nameof(StreamingController), null);
             return Ok();
         }
-        private static Encoding GetEncoding(MultipartSection section)
-        {
-            var hasMediaTypeHeader =
-                MediaTypeHeaderValue.TryParse(section.ContentType, out var mediaType);
-
-            // UTF-7 is insecure and shouldn't be honored. UTF-8 succeeds in 
-            // most cases.
-            if (!hasMediaTypeHeader || Encoding.UTF7.Equals(mediaType.Encoding))
-            {
-                return Encoding.UTF8;
-            }
-
-            return mediaType.Encoding;
-        }
-    }
-    public class FormData
-    {
-        public string Note { get; set; }
-    }
-    public class AppFile
-    {
-        public int Id { get; set; }
-
-        public byte[] Content { get; set; }
-
-        [Display(Name = "File Name")]
-        public string UntrustedName { get; set; }
-
-        [Display(Name = "Note")]
-        public string Note { get; set; }
-
-        [Display(Name = "Size (bytes)")]
-        [DisplayFormat(DataFormatString = "{0:N0}")]
-        public long Size { get; set; }
-
-        [Display(Name = "Uploaded (UTC)")]
-        [DisplayFormat(DataFormatString = "{0:G}")]
-        public DateTime UploadDT { get; set; }
     }
 }
