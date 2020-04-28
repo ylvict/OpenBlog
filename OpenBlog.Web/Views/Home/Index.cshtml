@@ -1,60 +1,29 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
 }
-
-<div>
-    <h2>Forms Submit</h2>
-    <form enctype="multipart/form-data" method="post" action="~/api/file/upload">
-        <dl>
-            <dd>
-                <input name="file" type="file">
-            </dd>
-        </dl>
-        <input class="btn" type="submit" value="Upload" />
-    </form>
-</div>
-
-<div>
-    <h2>Ajax File upload</h2>
-    <form action="~/api/file/upload"
-          enctype="multipart/form-data" onsubmit="AJAXSubmit(this);return false;"
-          method="post">
-        <dl>
-            <dt>
-                <label for="FileUpload_FormFile">File</label>
-            </dt>
-            <dd>
-                <input id="FileUpload_FormFile" type="file" name="FileUpload.FormFile" />
-            </dd>
-        </dl>
-
-        <input class="btn" type="submit" value="Upload" />
-
-        <div style="margin-top:15px">
-            <output name="result"></output>
-        </div>
-    </form>
-
-    <script>
-        async function AJAXSubmit(oFormElement) {
-            var resultElement = oFormElement.elements.namedItem("result");
-            const formData = new FormData(oFormElement);
-
-            try {
-                const response = await fetch(oFormElement.action, {
-                    method: 'POST',
-                    body: formData
-                });
-
-                if (response.ok) {
-                    window.location.href = '/';
-                }
-
-                resultElement.value = 'Result: ' + response.status + ' ' +
-                    response.statusText;
-            } catch (error) {
-                console.error('Error:', error);
-            }
+@model IEnumerable<OpenBlog.Web.Models.PostListItem>
+@section Styles
+{
+    <style>
+        .post-list {
         }
-    </script>
-</div>
+
+        .post {
+            margin: 20px;
+        }
+
+        .post-header {
+            background: #ccc;
+        }
+    </style>
+}
+
+<section class="post-list">
+    @foreach (var item in Model)
+    {
+        <div class="post" data-post-id="@item.PostId">
+            <div class="post-header">@item.Title</div>
+            <div class="post-content">@item.Content</div>
+        </div>
+    }
+</section>

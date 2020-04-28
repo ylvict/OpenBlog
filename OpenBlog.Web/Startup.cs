@@ -1,4 +1,5 @@
-using Microsoft.AspNetCore.Authentication;
+using AutoMapper;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.DataProtection;
@@ -7,12 +8,17 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using OpenBlog.DomainModels;
+using OpenBlog.Repository.Mongo;
 using OpenBlog.WebFramework.Sessions;
 using System;
 using System.IO;
-using System.Linq;
 using System.Net.Http;
-using System.Threading.Tasks;
+using System.Reflection;
+using OpenBlog.Infrastructure;
+using Niusys.Extensions.TypeFinders;
+using Niusys.Extensions.DependencyInjection;
+using System.Linq;
 
 namespace OpenBlog.Web
 {
@@ -23,6 +29,7 @@ namespace OpenBlog.Web
     public class Startup
     {
         private readonly IHostEnvironment _hostEnvironment;
+        public IConfiguration Configuration { get; }
 
         public Startup(IConfiguration configuration, IHostEnvironment hostEnvironment)
         {
@@ -30,13 +37,11 @@ namespace OpenBlog.Web
             _hostEnvironment = hostEnvironment;
         }
 
-        public IConfiguration Configuration { get; }
-
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDataProtection()
-                .PersistKeysToFileSystem(new DirectoryInfo(@$"{AppContext.BaseDirectory}\DataProtection-Keys")); 
+                .PersistKeysToFileSystem(new DirectoryInfo(@$"{AppContext.BaseDirectory}\DataProtection-Keys"));
             services.AddHttpClient(NamedHttpClients.ProxiedClient);
 
             // 注册HttpContextAccessor 建议默认就注册进来
@@ -51,13 +56,30 @@ namespace OpenBlog.Web
                     options.EventsType = typeof(CustomCookieAuthenticationEvents);
                 });
 
-            services.AddControllersWithViews();
+            services.AddControllersWithViews()
+                .AddFluentValidation();
 
+            #region 框架服务注册
+            services.Configure<TypeFinderOptions>(options =>
+            {
+                options.AssemblyMatchRegex = "^OpenBlog";
+            });
+            services.AddScoped<ITypeFinder, DefaultTypeFinder>();
+            services.AddDependencyRegister("^OpenBlog");
+
+            var autoScanAssemblies = AppDomain.CurrentDomain.GetAssemblies().Where(x => x.FullName.StartsWith("OpenBlog"));
+            services.AddAutoMapper(autoScanAssemblies);
+            #endregion
+
+            #region 注册存储服务
+            services.RegisterMongoStorage(Configuration);
+            #endregion
 
             #region 基础服务注册
             // 注册UserSession
             services.AddScoped<IUserSession, UserSession>();
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IPostRepository, PostRepository>();
             #endregion
 
             // Register the Swagger generator, defining 1 or more Swagger documents
@@ -106,52 +128,6 @@ namespace OpenBlog.Web
                 endpoints.MapControllerRoute(name: "HomePage", pattern: "", new { controller = "Home", action = "Index" });
                 endpoints.MapControllerRoute(name: "default", pattern: "{controller=Home}/{action=Index}/{id?}");
             });
-        }
-    }
-
-    public class CustomCookieAuthenticationEvents : CookieAuthenticationEvents
-    {
-        private readonly IUserRepository _userRepository;
-
-        public CustomCookieAuthenticationEvents(IUserRepository userRepository)
-        {
-            // Get the database from registered DI services.
-            _userRepository = userRepository;
-        }
-
-        public override async Task ValidatePrincipal(CookieValidatePrincipalContext context)
-        {
-            var userPrincipal = context.Principal;
-
-            // Look for the LastChanged claim.
-            var lastChanged = (from c in userPrincipal.Claims
-                               where c.Type == "LastChanged"
-                               select c.Value).FirstOrDefault();
-
-            if (string.IsNullOrEmpty(lastChanged) || !_userRepository.ValidateLastChanged(lastChanged))
-            {
-                context.RejectPrincipal();
-
-                await context.HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            }
-        }
-    }
-
-    public interface IUserRepository
-    {
-        bool ValidateLastChanged(string lastChanged);
-    }
-
-    public class UserRepository : IUserRepository
-    {
-        public bool ValidateLastChanged(string lastChanged)
-        {
-            if (!DateTime.TryParse(lastChanged, out var lastChangedTime))
-            {
-                return false;
-            }
-
-            return lastChangedTime.AddSeconds(30) > DateTime.Now;
         }
     }
 }

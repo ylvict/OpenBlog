@@ -26,6 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\OpenBlog.Infrastructure\OpenBlog.Infrastructure.csproj" />
     <ProjectReference Include="..\OpenBlog.Repository.Mongo\OpenBlog.Repository.Mongo.csproj" />
   </ItemGroup>
 

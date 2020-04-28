@@ -4,3 +4,69 @@
 <h1>@ViewData["Title"]</h1>
 
 <p>Use this page to detail your site's privacy policy.</p>
+<div>
+    <h2>任务</h2>
+
+    <ul>
+        <li>登录页面</li>
+        <li>发文章</li>
+        <li>显示文章</li>
+    </ul>
+</div>
+
+<div>
+    <h2>Forms Submit</h2>
+    <form enctype="multipart/form-data" method="post" action="~/api/file/upload">
+        <dl>
+            <dd>
+                <input name="file" type="file">
+            </dd>
+        </dl>
+        <input class="btn" type="submit" value="Upload" />
+    </form>
+</div>
+
+<div>
+    <h2>Ajax File upload</h2>
+    <form action="~/api/file/upload"
+          enctype="multipart/form-data" onsubmit="AJAXSubmit(this);return false;"
+          method="post">
+        <dl>
+            <dt>
+                <label for="FileUpload_FormFile">File</label>
+            </dt>
+            <dd>
+                <input id="FileUpload_FormFile" type="file" name="FileUpload.FormFile" />
+            </dd>
+        </dl>
+
+        <input class="btn" type="submit" value="Upload" />
+
+        <div style="margin-top:15px">
+            <output name="result"></output>
+        </div>
+    </form>
+
+    <script>
+        async function AJAXSubmit(oFormElement) {
+            var resultElement = oFormElement.elements.namedItem("result");
+            const formData = new FormData(oFormElement);
+
+            try {
+                const response = await fetch(oFormElement.action, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (response.ok) {
+                    window.location.href = '/';
+                }
+
+                resultElement.value = 'Result: ' + response.status + ' ' +
+                    response.statusText;
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+    </script>
+</div>

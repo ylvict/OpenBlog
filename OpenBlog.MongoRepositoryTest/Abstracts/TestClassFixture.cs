@@ -4,7 +4,7 @@ using OpenBlog.MongoRepositoryTest.Testing;
 using System;
 using System.Collections.Generic;
 using System.Text;
-
+using OpenBlog.Infrastructure;
 namespace OpenBlog.MongoRepositoryTest.Abstracts
 {
     public class TestClassFixture
