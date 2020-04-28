@@ -2,6 +2,6 @@
 ARG source
 WORKDIR /app
 EXPOSE 80
-COPY ${source:-Gmandarin.FrontWeb/obj/Docker/publish} .
+COPY ${source:-OpenBlog.Web/obj/Docker/publish} .
 VOLUME /appdata
 ENTRYPOINT ["dotnet", "OpenBlog.Web.dll"]
