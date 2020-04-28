@@ -6,7 +6,7 @@ docker run --rm \
 -v ~/.dotnet:/root/.dotnet \
 -v ~/.nuget:/root/.nuget  \
 -v ${workspace}:/src \
---workdir /src mcr.microsoft.com/dotnet/core/sdk:3.0 bash -c "dotnet --version && dotnet restore ./OpenBlog.sln && rm -rf ./OpenBlog.Web/obj/Docker/publish && dotnet publish ./OpenBlog.Web/OpenBlog.Web.csproj -c Release -o  ./OpenBlog.Web/obj/Docker/publish"
+--workdir /src mcr.microsoft.com/dotnet/core/sdk:3.1 bash -c "dotnet --version && dotnet restore ./OpenBlog.sln && rm -rf ./OpenBlog.Web/obj/Docker/publish && dotnet publish ./OpenBlog.Web/OpenBlog.Web.csproj -c Release -o  ./OpenBlog.Web/obj/Docker/publish"
 
 echo "current dir: `pwd`"
 buildreport_path='./OpenBlog.Web/obj/Docker/publish/buildreport'
