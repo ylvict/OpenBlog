@@ -24,3 +24,5 @@ echo "Image Version: ${imagesNames[number]}:${bulldversion}
     GIT_COMMITTER_EMAIL:$GIT_COMMITTER_EMAIL
     GIT_AUTHOR_EMAIL:$GIT_AUTHOR_EMAIL
     " > ${buildreport_path}/buildversion.txt
+
+docker build -t dukecheng/openblog:latest --file `pwd`/OpenBlog.Web/Dockerfile `pwd`    
