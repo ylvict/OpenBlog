@@ -64,6 +64,7 @@
 
 # RUN
 ```
+docker rm -f openblog &&
 docker run -d -it --name openblog \
 -p 9428:80  \
 --restart always  \
