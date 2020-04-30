@@ -25,6 +25,11 @@ namespace OpenBlog.Repository.Mongo
                 .ForMember(x => x.Name, mo => mo.MapFrom(s => s));
             CreateMap<string, Tag>()
                 .ForMember(x => x.Name, mo => mo.MapFrom(s => s));
+
+            CreateMap<User, UserEntity>()
+                .ForMember(d => d.Sysid, mo => mo.MapFrom(s => s.Sysid.SafeToObjectId())); ;
+            CreateMap<UserEntity, User>()
+                .ForMember(d => d.Sysid, mo => mo.MapFrom(s => s.Sysid.ToString()));
         }
     }
 

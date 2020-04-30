@@ -5,6 +5,14 @@
 
 <form asp-controller="Account" asp-action="Login" method="post">
     <div class="form-group">
+        <label for="Emial">邮箱</label>
+        @Html.TextBoxFor(x => x.Email)
+    </div>    
+    <div class="form-group">
+        <label for="Password">密码</label>
+        @Html.PasswordFor(x => x.Password)
+    </div>
+    <div class="form-group">
         <label for="IsRemberme">记住我?</label>
         @Html.CheckBoxFor(x => x.IsRemberme, new { @class = "form-control" })
     </div>

@@ -2,11 +2,13 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using OpenBlog.DomainModels;
 using OpenBlog.Web.Models;
 using OpenBlog.WebFramework;
 using System;
 using System.Collections.Generic;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
 
 namespace OpenBlog.Web.Controllers
@@ -14,6 +16,12 @@ namespace OpenBlog.Web.Controllers
 
     public class AccountController : Controller
     {
+        private readonly IUserRepository _userRepository;
+        public AccountController(IUserRepository userRepository)
+        {
+            _userRepository = userRepository;
+        }
+
         [HttpGet, AllowAnonymous]
         public IActionResult Login()
         {
@@ -24,13 +32,25 @@ namespace OpenBlog.Web.Controllers
         [HttpPost, ActionName("Login")]
         public async Task<IActionResult> LoginPost(LoginViewModel loginViewModel)
         {
-            var userEmail = "dk@feinian.me";
-            var fullName = "Duke Cheng";
+            //var userEmail = "dk@feinian.me";
+            //var fullName = "Duke Cheng";
+            var user = await _userRepository.GetUserByEmial(loginViewModel.Email);
+            if (user == null) return Content("User not Found.");
+
+            var saltPassword = loginViewModel.Password + user.PasswordSalt;
+            var saltPasswordBytes = System.Text.Encoding.ASCII.GetBytes(saltPassword);
+            using (var hash = SHA1.Create())
+            {
+                var hashBytes = hash.ComputeHash(saltPasswordBytes);
+                var hashString = Convert.ToBase64String(hashBytes);
+
+                if (hashString != user.PasswordHash) return Content("Incorect password.");
+            }
 
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Name, userEmail),
-                new Claim(ClaimNames.FullName, fullName),
+                new Claim(ClaimTypes.Name, user.Email),
+                new Claim(ClaimNames.FullName, user.FullName),
                 new Claim("LastChanged", DateTime.Now.ToString())
             };
 

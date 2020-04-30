@@ -2,8 +2,9 @@
 
 namespace OpenBlog.Repository.Mongo.Entities
 {
-    public class User : MongoEntityBase
+    public class UserEntity : MongoEntityBase
     {
+        public string FullName { get; set; }
         public string Email { get; set; }
         public string PasswordHash { get; set; }
         public string PasswordSalt { get; set; }
