@@ -19,7 +19,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="Content" class="control-label"></label>
-                <textarea asp-for="Content" class="form-control" rows="30" cols="80"></textarea>
+                <textarea name="Content" id="editor"></textarea>
                 <span asp-validation-for="Content" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -32,3 +32,17 @@
 <div>
     <a asp-action="PostList">Back to List</a>
 </div>
+@section Scripts
+{
+    <script src="~/lib/ckeditor.js" asp-append-version="true"></script>
+    <script>
+    ClassicEditor
+    .create( document.querySelector( '#editor' ) )
+                                    .then( editor => {
+                                            console.log( editor );
+                                    } )
+                                    .catch( error => {
+                                            console.error( error );
+                                    } );
+                    </script>
+}

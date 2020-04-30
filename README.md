@@ -63,6 +63,8 @@
 * 部分设计会参考[Edi.Wang的博客设计](https://github.com/EdiWang/Moonglade)
 
 # RUN
+
+## OpenBlog Web
 ```
 docker rm -f openblog &&
 docker run -d -it --name openblog \
@@ -72,4 +74,15 @@ docker run -d -it --name openblog \
 --volume=/data/openblog/:/appdata \
 -e ASPNETCORE_ENVIRONMENT=Staging \
 dukecheng/openblog:latest
+```
+
+## Mongo
+```
+mkdir -p /data/mongo/{db,backup,configdb,log}
+docker run -d --restart always --name mongo \
+--volume=/data/mongo/db:/data/db \
+--volume=/data/mongo/backup:/data/backup \
+--volume=/data/mongo/configdb:/data/configdb  \
+--volume=/data/mongo/log:/var/log  \
+hub.niusys.com/library/mongo:latest
 ```
