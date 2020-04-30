@@ -16,7 +16,15 @@ namespace OpenBlog.Repository.Mongo
             CreateMap<Post, PostEntity>()
                 .ForMember(d => d.Sysid, mo => mo.MapFrom(s => s.Sysid.SafeToObjectId()));
             CreateMap<PostEntity, Post>()
-                .ForMember(d => d.Sysid, mo => mo.MapFrom(s => s.Sysid.ToString()));
+                .ForMember(d => d.Sysid, mo => mo.MapFrom(s => s.Sysid.ToString()))
+                .ForMember(d=>d.Categories,mo=>mo.MapFrom(s=>s.Categories))
+                .ForMember(d=>d.Tags,mo=>mo.MapFrom(s=>s.Tags))
+                ;
+
+            CreateMap<string, Category>()
+                .ForMember(x => x.Name, mo => mo.MapFrom(s => s));
+            CreateMap<string, Tag>()
+                .ForMember(x => x.Name, mo => mo.MapFrom(s => s));
         }
     }
 

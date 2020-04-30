@@ -5,6 +5,7 @@ using OpenBlog.DomainModels;
 using OpenBlog.Web.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using OpenBlog.Web.Models.AdminModels;
 
 namespace OpenBlog.Web.Controllers
 {
@@ -28,14 +29,14 @@ namespace OpenBlog.Web.Controllers
         [HttpGet]
         public IActionResult NewPost()
         {
-            var viewModel = new NewPostViewModel();
+            var viewModel = new PostCreateViewModel();
             return View(viewModel);
         }
 
         [HttpPost, ActionName("NewPost")]
-        public async Task<IActionResult> NewPostSubmit(NewPostViewModel postViewModel)
+        public async Task<IActionResult> NewPostSubmit(PostCreateViewModel postCreateViewModel)
         {
-            var postEntity = _mapper.Map<Post>(postViewModel);
+            var postEntity = _mapper.Map<Post>(postCreateViewModel);
             await _postRepository.CreatePostAsync(postEntity);
             return RedirectToAction(nameof(PostList));
         }

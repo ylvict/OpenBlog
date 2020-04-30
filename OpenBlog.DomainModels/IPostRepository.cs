@@ -8,5 +8,7 @@ namespace OpenBlog.DomainModels
     {
         Task<string> CreatePostAsync(Post post);
         Task<Page<Post>> SearchPost(int pageIndex, int pageSize);
+        Task<Post> GetPost(string postId);
+        Task<Post> GetPostBySlug(string slug);
     }
 }

@@ -19,6 +19,7 @@ using OpenBlog.Infrastructure;
 using Niusys.Extensions.TypeFinders;
 using Niusys.Extensions.DependencyInjection;
 using System.Linq;
+using OpenBlog.Web.WebFramework.RouteTransformers;
 
 namespace OpenBlog.Web
 {
@@ -26,6 +27,7 @@ namespace OpenBlog.Web
     {
         public const string ProxiedClient = "ProxiedClient";
     }
+
     public class Startup
     {
         private readonly IHostEnvironment _hostEnvironment;
@@ -44,10 +46,10 @@ namespace OpenBlog.Web
                 .PersistKeysToFileSystem(new DirectoryInfo(@$"{AppContext.BaseDirectory}\DataProtection-Keys"));
             services.AddHttpClient(NamedHttpClients.ProxiedClient);
 
-            // ×¢²áHttpContextAccessor ½¨ÒéÄ¬ÈÏ¾Í×¢²á½øÀ´
+            // ×¢ï¿½ï¿½HttpContextAccessor ï¿½ï¿½ï¿½ï¿½Ä¬ï¿½Ï¾ï¿½×¢ï¿½ï¿½ï¿½ï¿½ï¿½
             services.AddHttpContextAccessor();
 
-            // Ìí¼ÓCookieÈÏÖ¤
+            // ï¿½ï¿½ï¿½ï¿½Cookieï¿½ï¿½Ö¤
             services.AddScoped<CustomCookieAuthenticationEvents>();
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options =>
@@ -59,34 +61,35 @@ namespace OpenBlog.Web
             services.AddControllersWithViews()
                 .AddFluentValidation();
 
-            #region ¿ò¼Ü·þÎñ×¢²á
-            services.Configure<TypeFinderOptions>(options =>
-            {
-                options.AssemblyMatchRegex = "^OpenBlog";
-            });
+            #region ï¿½ï¿½Ü·ï¿½ï¿½ï¿½×¢ï¿½ï¿½
+
+            services.Configure<TypeFinderOptions>(options => { options.AssemblyMatchRegex = "^OpenBlog"; });
             services.AddScoped<ITypeFinder, DefaultTypeFinder>();
             services.AddDependencyRegister("^OpenBlog");
 
-            var autoScanAssemblies = AppDomain.CurrentDomain.GetAssemblies().Where(x => x.FullName.StartsWith("OpenBlog"));
+            var autoScanAssemblies =
+                AppDomain.CurrentDomain.GetAssemblies().Where(x => x.FullName.StartsWith("OpenBlog"));
             services.AddAutoMapper(autoScanAssemblies);
+
             #endregion
 
-            #region ×¢²á´æ´¢·þÎñ
+            #region ×¢ï¿½ï¿½æ´¢ï¿½ï¿½ï¿½ï¿½
+
             services.RegisterMongoStorage(Configuration);
+
             #endregion
 
-            #region »ù´¡·þÎñ×¢²á
-            // ×¢²áUserSession
+            #region ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×¢ï¿½ï¿½
+
+            // ×¢ï¿½ï¿½UserSession
             services.AddScoped<IUserSession, UserSession>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IPostRepository, PostRepository>();
+
             #endregion
 
             // Register the Swagger generator, defining 1 or more Swagger documents
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
-            });
+            services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo {Title = "My API", Version = "v1"}); });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -102,6 +105,7 @@ namespace OpenBlog.Web
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
@@ -110,23 +114,24 @@ namespace OpenBlog.Web
 
             // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
             // specifying the Swagger JSON endpoint.
-            app.UseSwaggerUI(c =>
-            {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
-            });
+            app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1"); });
 
             app.UseRouting();
 
-            // ÈÏÖ¤
+            // ï¿½ï¿½Ö¤
             app.UseAuthentication();
 
-            // ÊÚÈ¨
+            // ï¿½ï¿½È¨
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllerRoute(name: "HomePage", pattern: "", new { controller = "Home", action = "Index" });
+                endpoints.MapControllerRoute(name: "HomePage", pattern: "",
+                    new {controller = "Home", action = "Index"});
+                endpoints.MapDynamicControllerRoute<BloggerTransformer>("blog/{category}/{*slug}");
+                endpoints.MapDynamicControllerRoute<BloggerTransformer>("blog/{year}/{month}/{*slug}");
                 endpoints.MapControllerRoute(name: "default", pattern: "{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapDynamicControllerRoute<GenericPageTransformer>("{slug}");
             });
         }
     }

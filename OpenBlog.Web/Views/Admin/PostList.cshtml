@@ -1,4 +1,4 @@
-﻿@model IEnumerable<OpenBlog.Web.Models.PostListItem>
+﻿@model IEnumerable<OpenBlog.Web.Models.AdminModels.PostListItem>
 
 @{
     ViewData["Title"] = "PostList";
@@ -19,7 +19,7 @@
                 @Html.DisplayNameFor(model => model.Title)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Content)
+                @Html.DisplayNameFor(model => model.Slug)
             </th>
             <th></th>
         </tr>
@@ -34,7 +34,7 @@
                 @Html.DisplayFor(modelItem => item.Title)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Content)
+                @Html.DisplayFor(modelItem => item.Slug)
             </td>
             <td>
                 @*@Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |

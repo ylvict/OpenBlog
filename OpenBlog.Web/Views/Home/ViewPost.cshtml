@@ -1,0 +1,17 @@
+﻿@model OpenBlog.Web.Models.PostDetailViewModel
+
+@{
+    ViewData["Title"] = "ViewPost";
+}
+
+<section class="post-detail">
+    <div class="post-detail-header">
+        <h1>@Model.Title</h1>
+        <span>发布时间</span> @Html.Raw(Model.CreateTime)
+        <span>最后更新时间</span>@Html.Raw(Model.UpdateTime)
+    </div>
+    <div class="post-detail-content">
+            @Html.Raw(Model.Content)
+    </div>
+    <div class="post-detail-footer"></div>
+</section>

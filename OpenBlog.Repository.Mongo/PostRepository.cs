@@ -6,6 +6,8 @@ using OpenBlog.Repository.Mongo.Abstracts;
 using OpenBlog.Repository.Mongo.Entities;
 using System;
 using System.Threading.Tasks;
+using MongoDB.Libmongocrypt;
+using Niusys.Extensions.Storage.Mongo;
 
 namespace OpenBlog.Repository.Mongo
 {
@@ -23,6 +25,8 @@ namespace OpenBlog.Repository.Mongo
         public async Task<string> CreatePostAsync(Post post)
         {
             var postEntity = _mapper.Map<PostEntity>(post);
+            postEntity.CreateTime = DateTime.Now;
+            postEntity.UpdateTime = DateTime.Now;
             await _postRep.AddAsync(postEntity);
             return postEntity.Sysid.ToString();
         }
@@ -34,6 +38,17 @@ namespace OpenBlog.Repository.Mongo
             var sort = sortBuilder.Descending(x => x.CreateTime);
             var searchResult = await _postRep.PaginationSearchAsync(filterBuilder.Empty, sort, pageIndex: pageIndex, pageSize: pageSize);
             return _mapper.Map<Page<Post>>(searchResult);
+        }
+
+        public async Task<Post> GetPost(string postId)
+        {
+            var postEntity= await _postRep.GetByPropertyAsync(x => x.Sysid, postId.SafeToObjectId());
+            return _mapper.Map<Post>(postEntity);
+        }
+        public async Task<Post> GetPostBySlug(string slug)
+        {
+            var postEntity= await _postRep.GetByPropertyAsync(x => x.Slug, slug);
+            return _mapper.Map<Post>(postEntity);
         }
     }
 }
