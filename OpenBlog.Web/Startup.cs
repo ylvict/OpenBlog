@@ -19,6 +19,7 @@ using OpenBlog.Infrastructure;
 using Niusys.Extensions.TypeFinders;
 using Niusys.Extensions.DependencyInjection;
 using System.Linq;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using OpenBlog.Web.WebFramework.RouteTransformers;
 
 namespace OpenBlog.Web
@@ -48,6 +49,7 @@ namespace OpenBlog.Web
 
             // ע��HttpContextAccessor ����Ĭ�Ͼ�ע�����
             services.AddHttpContextAccessor();
+            services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
 
             // ����Cookie��֤
             services.AddScoped<CustomCookieAuthenticationEvents>();
@@ -86,6 +88,11 @@ namespace OpenBlog.Web
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IPostRepository, PostRepository>();
 
+            #endregion
+
+            #region Register Route Transformer
+            services.AddScoped<BloggerTransformer>();
+            services.AddScoped<GenericPageTransformer>();
             #endregion
 
             // Register the Swagger generator, defining 1 or more Swagger documents

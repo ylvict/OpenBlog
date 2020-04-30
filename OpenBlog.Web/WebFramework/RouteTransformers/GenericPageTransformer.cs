@@ -23,7 +23,7 @@ namespace OpenBlog.Web.WebFramework.RouteTransformers
             SlugViewMapping = new Dictionary<string, string>();
             foreach (var item in genericPageUrls)
             {
-                SlugViewMapping.TryAdd(item.GetValue(null).ToString(), item.Name);
+                SlugViewMapping.TryAdd(item.Name.ToLower(), item.Name);
             }
         }
 
