@@ -62,3 +62,13 @@
 # 参考
 * 部分设计会参考[Edi.Wang的博客设计](https://github.com/EdiWang/Moonglade)
 
+# RUN
+```
+docker run -d -it --name openblog \
+-p 9428:80  \
+--restart always  \
+--link mongo:mongo \
+--volume=/data/openblog/:/appdata \
+-e ASPNETCORE_ENVIRONMENT=Staging \
+dukecheng/openblog:latest
+```
