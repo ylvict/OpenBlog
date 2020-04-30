@@ -44,7 +44,7 @@ namespace OpenBlog.Web
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDataProtection()
-                .PersistKeysToFileSystem(new DirectoryInfo(@$"{AppContext.BaseDirectory}\DataProtection-Keys"));
+                .PersistKeysToFileSystem(new DirectoryInfo(@$"{Environment.CurrentDirectory}{Path.DirectorySeparatorChar}DataProtection-Keys"));
             services.AddHttpClient(NamedHttpClients.ProxiedClient);
 
             // ע��HttpContextAccessor ����Ĭ�Ͼ�ע�����

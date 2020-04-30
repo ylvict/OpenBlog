@@ -28,6 +28,15 @@
                     <li class="nav-item">
                         <a class="nav-link text-dark" href="~/contact">Contact</a>
                     </li>
+                    @if (UserSession.IsAuthenticated)
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-action="Index" asp-controller="Admin" asp-area="">Blog Admin</a>
+                        </li>
+                    }
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" href="~/history">开发历史</a>
+                    </li>
                 </ul>
             </div>
             @if (UserSession.IsAuthenticated)

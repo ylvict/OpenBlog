@@ -9,8 +9,9 @@ namespace OpenBlog.Web.WebFramework.RouteTransformers
 {
     public enum GenericPages
     {
-        Abount,
-        Contact
+        About,
+        Contact,
+        History
     }
 
     public class GenericPageTransformer : DynamicRouteValueTransformer
