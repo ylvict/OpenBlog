@@ -19,7 +19,14 @@ using OpenBlog.Infrastructure;
 using Niusys.Extensions.TypeFinders;
 using Niusys.Extensions.DependencyInjection;
 using System.Linq;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Niusys.Security;
+using OpenBlog.Web.HostedServices;
+using OpenBlog.Web.Services;
 using OpenBlog.Web.WebFramework.Middlewares;
 using OpenBlog.Web.WebFramework.RouteTransformers;
 
@@ -45,12 +52,23 @@ namespace OpenBlog.Web
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDataProtection()
-                .PersistKeysToFileSystem(new DirectoryInfo(@$"{Environment.CurrentDirectory}{Path.DirectorySeparatorChar}DataProtection-Keys"));
+                .PersistKeysToFileSystem(
+                    new DirectoryInfo(
+                        @$"{Environment.CurrentDirectory}{Path.DirectorySeparatorChar}DataProtection-Keys"));
             services.AddHttpClient(NamedHttpClients.ProxiedClient);
 
             // ע��HttpContextAccessor ����Ĭ�Ͼ�ע�����
             services.AddHttpContextAccessor();
             services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
+            
+            services.Configure<CookiePolicyOptions>(options =>
+            {
+                // This lambda determines whether user consent for non-essential 
+                // cookies is needed for a given request.
+                options.CheckConsentNeeded = context => false;
+                // requires using Microsoft.AspNetCore.Http;
+                options.MinimumSameSitePolicy = SameSiteMode.Lax;
+            });
 
             // ����Cookie��֤
             services.AddScoped<CustomCookieAuthenticationEvents>();
@@ -88,16 +106,21 @@ namespace OpenBlog.Web
             services.AddScoped<IUserSession, UserSession>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IPostRepository, PostRepository>();
+            services.AddSingleton<InstallTokenService>();
+            services.AddSingleton<IEncryptionService, EncryptionService>();
 
             #endregion
 
             #region Register Route Transformer
+
             services.AddScoped<BloggerTransformer>();
             services.AddScoped<GenericPageTransformer>();
+
             #endregion
 
             // Register the Swagger generator, defining 1 or more Swagger documents
             services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo {Title = "My API", Version = "v1"}); });
+            services.AddHostedService<InstallTokenHostService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -116,6 +139,7 @@ namespace OpenBlog.Web
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+            app.UseCookiePolicy();
 
             // Enable middleware to serve generated Swagger as a JSON endpoint.
             app.UseSwagger();

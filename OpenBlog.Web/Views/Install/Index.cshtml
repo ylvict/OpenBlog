@@ -1,5 +1,6 @@
-<form method="post">
+<form method="post" asp-action="Index">
+     <div asp-validation-summary="All" class="text-danger"></div>
     <span>Init Token</span>
-    <input name="initToken"/>
+    <input name="token"/>
     <input type="submit" value="Submit"/>
 </form>

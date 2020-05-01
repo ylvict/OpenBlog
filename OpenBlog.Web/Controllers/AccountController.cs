@@ -37,22 +37,21 @@ namespace OpenBlog.Web.Controllers
             if (user == null) 
                 return Content("User not Found.");
 
-            var saltPassword = loginViewModel.Password + user.PasswordSalt;
-            var saltPasswordBytes = System.Text.Encoding.ASCII.GetBytes(saltPassword);
-            using (var hash = SHA1.Create())
-            {
-                var hashBytes = hash.ComputeHash(saltPasswordBytes);
-                var hashString = Convert.ToBase64String(hashBytes);
+            var newPasswordHash =
+                encryptionService.CreatePasswordHash(loginViewModel.Password, user.PasswordSalt, "SHA256");
 
-                if (hashString != user.PasswordHash) return Content("Incorect password.");
+            if (!newPasswordHash.Equals(user.PasswordHash))
+            {
+                ModelState.AddModelError("", "密码错误");
+                return View();
             }
 
             var claims = new List<Claim>
             {
                 new Claim(ClaimNames.UserId, user.Sysid),
                 new Claim(ClaimTypes.Name, user.Email),
-                new Claim(ClaimNames.FullName, user.FullName),
-                new Claim("LastChanged", DateTime.Now.ToString(CultureInfo.InvariantCulture))
+                new Claim(ClaimNames.FullName, user.DisplayName),
+                new Claim("LastChanged", user.UpdateTime.ToString(CultureInfo.InvariantCulture))
             };
 
             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);

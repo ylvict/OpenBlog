@@ -1,8 +1,17 @@
 @model SystemAdminInitViewModel
-<form method="post">
-    <span>Init Admin User</span>
-    <input type="hidden" name="token" value="@Model.Token"/>
-    <input asp-for="Email"/>
-    <input asp-for="Password"/>
-    <input type="submit" value="Submit"/>
-</form>
+<div class="row">
+    <div class="col-md-12">
+        <h2>Init Admin User</h2>
+        <form method="post" asp-action="InitAdmin">
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <input type="hidden" name="token" value="@Model.Token"/>
+            <div class="form-group">
+                <input asp-for="Email" placeholder="Admin Email"/>
+            </div>
+            <div class="form-group">
+                <input asp-for="Password" type="password" placeholder="Password"/>
+            </div>
+            <input type="submit" value="Submit"/>
+        </form>
+    </div>
+</div>

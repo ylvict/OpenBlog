@@ -51,6 +51,7 @@ namespace OpenBlog.Repository.Mongo
                 DisplayName = email, 
                 PasswordSalt = passwordSalt,
                 PasswordHash = passwordHash,
+                UserType =  UserType.SystemAdmin,
                 CreateTime = DateTime.Now, 
                 UpdateTime = DateTime.Now
             };

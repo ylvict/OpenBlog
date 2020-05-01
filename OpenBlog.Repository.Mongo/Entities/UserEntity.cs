@@ -20,17 +20,16 @@ namespace OpenBlog.Repository.Mongo.Entities
         /// <summary>
         /// 系统级管理员
         /// </summary>
-        SystemAdmin,
-        
+        SystemAdmin = 1,
+
         /// <summary>
         /// 内容贡献者
         /// </summary>
-        Contributor,
-        
+        Contributor = 2,
+
         /// <summary>
         /// 读者
         /// </summary>
-        Reader
+        Reader = 3
     }
-         
 }
