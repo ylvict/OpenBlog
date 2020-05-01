@@ -20,6 +20,7 @@ using Niusys.Extensions.TypeFinders;
 using Niusys.Extensions.DependencyInjection;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
+using OpenBlog.Web.WebFramework.Middlewares;
 using OpenBlog.Web.WebFramework.RouteTransformers;
 
 namespace OpenBlog.Web
@@ -122,7 +123,7 @@ namespace OpenBlog.Web
             // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
             // specifying the Swagger JSON endpoint.
             app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1"); });
-
+            app.UseMiddleware<InstallCheckMiddleware>();
             app.UseRouting();
 
             // ��֤

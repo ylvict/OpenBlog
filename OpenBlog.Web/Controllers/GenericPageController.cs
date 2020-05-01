@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.ViewEngines;
 
-namespace OpenBlog.Web.Areas.Admin.Controllers
+namespace OpenBlog.Web.Controllers
 {
     public class GenericPageController : Controller
     {

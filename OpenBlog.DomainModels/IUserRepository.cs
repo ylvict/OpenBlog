@@ -5,7 +5,11 @@ namespace OpenBlog.DomainModels
     public interface IUserRepository
     {
         Task<string> CreateUserAsync(User user);
-        Task<User> GetUserByEmial(string email);
-        bool ValidateLastChanged(string lastChanged);
+        Task<User> GetUserByEmail(string email);
+        Task<User> GetUser(string userId);
+        Task<bool> IsSystemAdminInited();
+        Task InitSystemAdminUser(string email, string passwordSalt, string passwordHash);
+        Task<bool> ValidateLastChanged(string userId, string lastChangeToken);
+        
     }
 }

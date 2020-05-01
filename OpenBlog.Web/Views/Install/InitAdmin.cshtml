@@ -1,0 +1,8 @@
+@model SystemAdminInitViewModel
+<form method="post">
+    <span>Init Admin User</span>
+    <input type="hidden" name="token" value="@Model.Token"/>
+    <input asp-for="Email"/>
+    <input asp-for="Password"/>
+    <input type="submit" value="Submit"/>
+</form>

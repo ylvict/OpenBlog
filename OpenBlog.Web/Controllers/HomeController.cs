@@ -1,13 +1,12 @@
-﻿using System;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using OpenBlog.DomainModels;
 using OpenBlog.Web.Models;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
-namespace OpenBlog.Web.Areas.Admin.Controllers
+namespace OpenBlog.Web.Controllers
 {
     public class HomeController : Controller
     {

@@ -3,8 +3,11 @@ using OpenBlog.DomainModels;
 using OpenBlog.Repository.Mongo.Abstracts;
 using OpenBlog.Repository.Mongo.Entities;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
+using MongoDB.Bson;
 using MongoDB.Driver;
+using Niusys.Extensions.Storage.Mongo;
 
 namespace OpenBlog.Repository.Mongo
 {
@@ -17,18 +20,6 @@ namespace OpenBlog.Repository.Mongo
         {
             _mapper = mapper;
             _userRep = userRep;
-
-            if(!userRep.Collection.AsQueryable().Any())
-            {
-                userRep.AddAsync(
-                    new UserEntity() 
-                    { 
-                        FullName = "Duke Cheng",
-                        Email = "dk@feinian.me",
-                        PasswordHash = "K6oKuADN/NUWXAH9P8O4u7Ckrf0=",
-                        PasswordSalt = "",
-                    });
-            }
         }
 
         public async Task<string> CreateUserAsync(User user)
@@ -38,20 +29,55 @@ namespace OpenBlog.Repository.Mongo
             return userEntity.Sysid.ToString();
         }
 
-        public async Task<User> GetUserByEmial(string email)
+        public async Task<User> GetUser(string userId)
+        {
+            var userEntity = await GetUserInternal(userId.SafeToObjectId());
+            return _mapper.Map<User>(userEntity);
+        }
+
+        public async Task<bool> IsSystemAdminInited()
+        {
+            var filterBuilder = Builders<UserEntity>.Filter;
+            var filter = filterBuilder.Where(x => x.UserType == UserType.SystemAdmin);
+            var systemAdminUsers = await _userRep.SearchAsync(filter);
+            return systemAdminUsers.Any();
+        }
+
+        public async Task InitSystemAdminUser(string email, string passwordSalt, string passwordHash)
+        {
+            var userEntity = new UserEntity()
+            {
+                Email = email, 
+                DisplayName = email, 
+                PasswordSalt = passwordSalt,
+                PasswordHash = passwordHash,
+                CreateTime = DateTime.Now, 
+                UpdateTime = DateTime.Now
+            };
+            await _userRep.AddAsync(userEntity);
+        }
+
+        private async Task<UserEntity> GetUserInternal(ObjectId userId)
+        {
+            return await _userRep.GetByPropertyAsync(x => x.Sysid, userId);
+        }
+
+        public async Task<User> GetUserByEmail(string email)
         {
             var userEntity = await _userRep.GetByPropertyAsync(x => x.Email, email);
             return _mapper.Map<User>(userEntity);
         }
 
-        public bool ValidateLastChanged(string lastChanged)
+        public async Task<bool> ValidateLastChanged(string userId, string lastChangeToken)
         {
-            if (!DateTime.TryParse(lastChanged, out var lastChangedTime))
+            if (!DateTime.TryParse(lastChangeToken, out var lastChangedTime))
             {
                 return false;
             }
 
-            return lastChangedTime.AddSeconds(30) > DateTime.Now;
+            var userEntity = await GetUserInternal(userId.SafeToObjectId());
+
+            return userEntity.UpdateTime > lastChangedTime;
         }
     }
 }

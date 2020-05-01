@@ -7,13 +7,14 @@ using OpenBlog.Web.Models;
 using OpenBlog.WebFramework;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
+using Niusys.Security;
 
 namespace OpenBlog.Web.Controllers
 {
-
     public class AccountController : Controller
     {
         private readonly IUserRepository _userRepository;
@@ -30,12 +31,11 @@ namespace OpenBlog.Web.Controllers
         }
 
         [HttpPost, ActionName("Login")]
-        public async Task<IActionResult> LoginPost(LoginViewModel loginViewModel)
+        public async Task<IActionResult> LoginPost(LoginViewModel loginViewModel,[FromServices]IEncryptionService encryptionService)
         {
-            //var userEmail = "dk@feinian.me";
-            //var fullName = "Duke Cheng";
-            var user = await _userRepository.GetUserByEmial(loginViewModel.Email);
-            if (user == null) return Content("User not Found.");
+            var user = await _userRepository.GetUserByEmail(loginViewModel.Email);
+            if (user == null) 
+                return Content("User not Found.");
 
             var saltPassword = loginViewModel.Password + user.PasswordSalt;
             var saltPasswordBytes = System.Text.Encoding.ASCII.GetBytes(saltPassword);
@@ -49,9 +49,10 @@ namespace OpenBlog.Web.Controllers
 
             var claims = new List<Claim>
             {
+                new Claim(ClaimNames.UserId, user.Sysid),
                 new Claim(ClaimTypes.Name, user.Email),
                 new Claim(ClaimNames.FullName, user.FullName),
-                new Claim("LastChanged", DateTime.Now.ToString())
+                new Claim("LastChanged", DateTime.Now.ToString(CultureInfo.InvariantCulture))
             };
 
             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
