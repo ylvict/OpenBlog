@@ -1,14 +1,15 @@
-using System.Security.Cryptography;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Niusys.Security;
 using OpenBlog.DomainModels;
 using OpenBlog.Web.Models;
 using OpenBlog.Web.Services;
+using OpenBlog.Web.WebFramework.Install;
 
 namespace OpenBlog.Web.Controllers
 {
-    public class InstallController : Controller
+  [SystemInitializedCheck]
+  public class InstallController : Controller
     {
         private readonly InstallTokenService _installTokenService;
 
@@ -16,6 +17,7 @@ namespace OpenBlog.Web.Controllers
         {
             _installTokenService = installTokenService;
         }
+
         [HttpGet]
         public IActionResult Index()
         {
@@ -27,10 +29,10 @@ namespace OpenBlog.Web.Controllers
         {
             if (!_installTokenService.Token.Equals(token))
             {
-                ModelState.AddModelError("","Token不正确");
+                ModelState.AddModelError("", "Token不正确");
                 return View();
             }
-            
+
             return RedirectToAction(nameof(InitAdmin), new {token = token});
         }
 
@@ -48,7 +50,7 @@ namespace OpenBlog.Web.Controllers
         {
             if (!_installTokenService.Token.Equals(model.Token))
             {
-                ModelState.AddModelError("","Token不正确");
+                ModelState.AddModelError("", "Token不正确");
                 return View();
             }
 

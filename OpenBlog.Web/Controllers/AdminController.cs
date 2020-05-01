@@ -1,10 +1,9 @@
-﻿using AutoMapper;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OpenBlog.DomainModels;
-using OpenBlog.Web.Models;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using OpenBlog.Web.Models.AdminModels;
 
 namespace OpenBlog.Web.Controllers
