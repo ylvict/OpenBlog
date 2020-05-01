@@ -86,3 +86,19 @@ docker run -d --restart always --name mongo \
 --volume=/data/mongo/log:/var/log  \
 hub.niusys.com/library/mongo:latest
 ```
+
+## 国内镜像地址
+```
+docker pull hub.niusys.com/dukecheng/openblog:latest
+docker pull hub.niusys.com/library/mongo:latest
+```
+
+## 安装(查看Install Token)
+```
+docker logs openblog
+看到下面类似的token
+==============================================================
+Init Token
+BM0XvkdXNIB7XpJ5OVWNtL1ku5GFl07wyI5aVA6TVKg=
+==============================================================
+```
