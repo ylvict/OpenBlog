@@ -1,4 +1,5 @@
 using System;
+using MongoDB.Bson.Serialization.Attributes;
 using OpenBlog.Repository.Mongo.Abstracts;
 
 namespace OpenBlog.Repository.Mongo.Entities
@@ -15,6 +16,7 @@ namespace OpenBlog.Repository.Mongo.Entities
         /// <summary>
         /// 创建时间
         /// </summary>
+        [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
         public DateTime CreateTime { get; set; }
     }
 }

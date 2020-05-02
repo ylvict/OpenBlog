@@ -1,4 +1,5 @@
 ﻿using System;
+using MongoDB.Bson.Serialization.Attributes;
 using OpenBlog.Repository.Mongo.Abstracts;
 
 namespace OpenBlog.Repository.Mongo.Entities
@@ -10,8 +11,11 @@ namespace OpenBlog.Repository.Mongo.Entities
         public string PasswordHash { get; set; }
         public string PasswordSalt { get; set; }
         public UserType UserType { get; set; }
+        [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
         public DateTime CreateTime { get; set; }
+        [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
         public DateTime UpdateTime { get; set; }
+        [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
         public DateTime LastLoginTime { get; set; }
     }
 

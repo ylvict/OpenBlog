@@ -2,34 +2,52 @@
     ViewData["Title"] = "Home Page";
 }
 @model IEnumerable<OpenBlog.Web.Models.PostPublicListItem>
+
 @section Styles
 {
     <style>
         .post-list {
         }
 
-        .post {
-            margin: 20px;
-        }
-
-        .post-header {
-            background: #ccc;
+        .post-item{
+            margin: 10px 0;
         }
     </style>
 }
 
-<section class="post-list">
-    @foreach (var item in Model)
-    {
-        <div class="post" data-post-id="@item.PostId">
-            <div class="post-header">
-                <a href=@($"/blog/{item.CreateTime.Year}/{item.CreateTime.Month}/{item.Slug??item.PostId}")>@item.Title</a>
-            </div>
-            <div class="post-summary">@item.Summary</div>
-            <div class="post-footer">
-                <span>发布时间</span> @Html.Raw(item.CreateTime)
-                <span>最后更新时间</span>@Html.Raw(item.UpdateTime)
-            </div>
+<div class="row">
+    <div class="col-md-8">
+        <section class="post-list">
+            @foreach (var item in Model)
+            {
+                <div class="card post-item">
+                    <div class="card-header post-header">
+                        <a href=@($"/blog/{item.CreateTime.Year}/{item.CreateTime.Month}/{item.Slug ?? item.PostId}")>@item.Title</a>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">
+                            @Html.Raw(item.Summary)
+                        </p>
+                    </div>
+                    <div class="card-footer text-muted">
+                        <span>发布时间 @Html.Raw(item.CreateTime)</span>
+                        @if (!item.UpdateTime.Equals(item.CreateTime))
+                        {
+                            <span>最后更新 @Html.Raw(item.UpdateTime)</span>
+                        }
+                    </div>
+                </div>
+            }
+        </section>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+          <h5 class="card-header">@UserSession.DisplayName</h5>
+          <div class="card-body">
+            <h5 class="card-title">Special title treatment</h5>
+            <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+            <a href="#" class="btn btn-primary">Go somewhere</a>
+          </div>
         </div>
-    }
-</section>
+    </div>
+</div>

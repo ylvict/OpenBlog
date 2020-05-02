@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "ViewPost";
+    ViewBag.CanonicalUrl = $"~/blog/{Model.CreateTime.Year}/{Model.CreateTime.Month}/{Model.Slug ?? Model.PostId}";
 }
 
 @section Styles

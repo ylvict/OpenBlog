@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace OpenBlog.Repository.Mongo.Entities
 {
@@ -40,11 +41,13 @@ namespace OpenBlog.Repository.Mongo.Entities
         /// <summary>
         /// 创建时间
         /// </summary>
+        [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
         public DateTime CreateTime { get; set; }
 
         /// <summary>
         /// 最后更新时间
         /// </summary>
+        [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
         public DateTime UpdateTime { get; set; }
 
         /// <summary>

@@ -94,6 +94,7 @@ namespace OpenBlog.Web
             {
                 options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = SameSiteMode.Strict;
+                options.ConsentCookie.Expiration = TimeSpan.FromDays(30);
             });
 
             // Cookie Config
