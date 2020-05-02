@@ -79,14 +79,11 @@ namespace OpenBlog.Web.Controllers
             }
 
             var viewResult = compositeViewEngine.FindView(actionContextAccessor.ActionContext, viewName: httpStatusCode, false);
-            if (viewResult.Success)
-            {
-                ViewBag.StatusCode = httpStatusCode;
-                ViewBag.OriginalPath = feature?.OriginalPath;
-                ViewBag.OriginalQueryString = feature?.OriginalQueryString;
-                return View(httpStatusCode);
-            }
-            return RedirectToRoute("HomePage");
+            if (!viewResult.Success) return RedirectToRoute("HomePage");
+            ViewBag.StatusCode = httpStatusCode;
+            ViewBag.OriginalPath = feature?.OriginalPath;
+            ViewBag.OriginalQueryString = feature?.OriginalQueryString;
+            return View(httpStatusCode);
         }
 
     }

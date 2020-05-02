@@ -25,4 +25,16 @@ echo "Image Version: ${imagesNames[number]}:${bulldversion}
     GIT_AUTHOR_EMAIL:$GIT_AUTHOR_EMAIL
     " > ${buildreport_path}/buildversion.txt
 
-docker build -t dukecheng/openblog:latest --file `pwd`/OpenBlog.Web/Dockerfile `pwd`    
+docker build -t dukecheng/openblog:latest --file `pwd`/OpenBlog.Web/Dockerfile `pwd`
+docker tag dukecheng/openblog:latest hub.niusys.com/dukecheng/openblog:latest
+
+cur_version=$(date +'%Y%m%d');
+docker tag dukecheng/openblog:latest dukecheng/openblog:1.${cur_version}
+docker tag dukecheng/openblog:latest hub.niusys.com/dukecheng/openblog:1.${cur_version}
+
+docker push dukecheng/openblog:latest
+docker push dukecheng/openblog:1.${cur_version}
+docker push hub.niusys.com/dukecheng/openblog:1.${cur_version}
+
+docker image rm dukecheng/openblog:1.${cur_version}
+docker image rm hub.niusys.com/dukecheng/openblog:1.${cur_version}
