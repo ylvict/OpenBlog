@@ -29,12 +29,13 @@ docker build -t dukecheng/openblog:latest --file `pwd`/OpenBlog.Web/Dockerfile `
 docker tag dukecheng/openblog:latest hub.niusys.com/dukecheng/openblog:latest
 
 cur_version=$(date +'%Y%m%d');
-docker tag dukecheng/openblog:latest dukecheng/openblog:1.${cur_version}
+#docker tag dukecheng/openblog:latest dukecheng/openblog:1.${cur_version}
 docker tag dukecheng/openblog:latest hub.niusys.com/dukecheng/openblog:1.${cur_version}
 
-docker push dukecheng/openblog:latest
-docker push dukecheng/openblog:1.${cur_version}
+#docker push dukecheng/openblog:latest
+#docker push dukecheng/openblog:1.${cur_version}
 docker push hub.niusys.com/dukecheng/openblog:1.${cur_version}
+docker push hub.niusys.com/dukecheng/openblog:latest
 
-docker image rm dukecheng/openblog:1.${cur_version}
-docker image rm hub.niusys.com/dukecheng/openblog:1.${cur_version}
+#docker image rm dukecheng/openblog:1.${cur_version}
+#docker image rm hub.niusys.com/dukecheng/openblog:1.${cur_version}
