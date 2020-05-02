@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-
-namespace OpenBlog.WebFramework.Sessions
+﻿namespace OpenBlog.Web.WebFramework.Sessions
 {
     public interface IUserSession
     {

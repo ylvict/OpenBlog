@@ -1,10 +1,9 @@
-﻿using OpenBlog.WebFramework.Sessions;
-using Microsoft.AspNetCore.Http;
+﻿using System;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.Extensions.DependencyInjection;
-using System;
+using OpenBlog.Web.WebFramework.Sessions;
 
-namespace OpenBlog.WebFramework
+namespace OpenBlog.Web.WebFramework
 {
     public abstract class BaseRazorPage<T> : RazorPage<T>
     {

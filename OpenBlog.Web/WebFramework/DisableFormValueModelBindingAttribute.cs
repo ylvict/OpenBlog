@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc.Filters;
+﻿using System;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using System;
 
-namespace OpenBlog.Web.Controllers
+namespace OpenBlog.Web.WebFramework
 {
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
     public class DisableFormValueModelBindingAttribute : Attribute, IResourceFilter

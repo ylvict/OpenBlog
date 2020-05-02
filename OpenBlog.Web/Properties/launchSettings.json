@@ -7,14 +7,6 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
-    },
-    "OpenBlog.Web_Stg": {
-      "commandName": "Project",
-      "launchBrowser": false,
-      "applicationUrl": "http://localhost:5000",
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Staging"
-      }
     }
   }
 }

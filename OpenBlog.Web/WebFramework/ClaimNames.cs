@@ -1,4 +1,4 @@
-﻿namespace OpenBlog.WebFramework
+﻿namespace OpenBlog.Web.WebFramework
 {
     public static class ClaimNames
     {

@@ -1,9 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
-using System;
+﻿using System;
 using System.Linq;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Http;
 
-namespace OpenBlog.WebFramework.Sessions
+namespace OpenBlog.Web.WebFramework.Sessions
 {
     public class UserSession : IUserSession
     {

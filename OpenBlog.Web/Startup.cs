@@ -1,34 +1,29 @@
+using System;
+using System.IO;
+using System.Linq;
 using AutoMapper;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
-using OpenBlog.DomainModels;
-using OpenBlog.Repository.Mongo;
-using OpenBlog.WebFramework.Sessions;
-using System;
-using System.IO;
-using System.Net.Http;
-using System.Reflection;
-using OpenBlog.Infrastructure;
-using Niusys.Extensions.TypeFinders;
 using Niusys.Extensions.DependencyInjection;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Niusys.Extensions.TypeFinders;
 using Niusys.Security;
+using OpenBlog.DomainModels;
+using OpenBlog.Infrastructure;
+using OpenBlog.Repository.Mongo;
 using OpenBlog.Web.HostedServices;
 using OpenBlog.Web.Services;
 using OpenBlog.Web.WebFramework.Middlewares;
 using OpenBlog.Web.WebFramework.RouteTransformers;
+using OpenBlog.Web.WebFramework.Sessions;
 
 namespace OpenBlog.Web
 {
@@ -51,63 +46,75 @@ namespace OpenBlog.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            #region Application Assembly
+
             services.AddDataProtection()
                 .PersistKeysToFileSystem(
                     new DirectoryInfo(
                         @$"{Environment.CurrentDirectory}{Path.DirectorySeparatorChar}DataProtection-Keys"));
-            services.AddHttpClient(NamedHttpClients.ProxiedClient);
 
-            // ע��HttpContextAccessor ����Ĭ�Ͼ�ע�����
             services.AddHttpContextAccessor();
             services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
-            
-            services.Configure<CookiePolicyOptions>(options =>
-            {
-                // This lambda determines whether user consent for non-essential 
-                // cookies is needed for a given request.
-                options.CheckConsentNeeded = context => false;
-                // requires using Microsoft.AspNetCore.Http;
-                options.MinimumSameSitePolicy = SameSiteMode.Lax;
-            });
-
-            // ����Cookie��֤
-            services.AddScoped<CustomCookieAuthenticationEvents>();
-            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                .AddCookie(options =>
-                {
-                    options.Cookie.Name = "aspnetcoredemo.auth";
-                    options.EventsType = typeof(CustomCookieAuthenticationEvents);
-                });
-
-            services.AddControllersWithViews()
-                .AddFluentValidation();
-
-            #region ��ܷ���ע��
 
             services.Configure<TypeFinderOptions>(options => { options.AssemblyMatchRegex = "^OpenBlog"; });
             services.AddScoped<ITypeFinder, DefaultTypeFinder>();
             services.AddDependencyRegister("^OpenBlog");
 
             var autoScanAssemblies =
-                AppDomain.CurrentDomain.GetAssemblies().Where(x => x.FullName.StartsWith("OpenBlog"));
+                AppDomain.CurrentDomain.GetAssemblies()
+                    .Where(x => x.FullName != null && x.FullName.StartsWith("OpenBlog"));
             services.AddAutoMapper(autoScanAssemblies);
 
+            services.AddHttpClient(NamedHttpClients.ProxiedClient);
+
             #endregion
 
-            #region ע��洢����
+            #region Mvc Configuration
+
+            services.AddControllersWithViews()
+                .AddFluentValidation();
+
+            #endregion
+
+            #region Infrastructure Service
 
             services.RegisterMongoStorage(Configuration);
+            services.RegisterEmailService(Configuration);
 
             #endregion
 
-            #region ��������ע��
+            #region Security Part (UserIdentity & Authentication & Authorization)
 
-            // ע��UserSession
+            services.AddScoped<CustomCookieAuthenticationEvents>();
             services.AddScoped<IUserSession, UserSession>();
             services.AddScoped<IUserRepository, UserRepository>();
-            services.AddScoped<IPostRepository, PostRepository>();
-            services.AddSingleton<InstallTokenService>();
             services.AddSingleton<IEncryptionService, EncryptionService>();
+            services.Configure<CookiePolicyOptions>(options =>
+            {
+                options.CheckConsentNeeded = context => false;
+                options.MinimumSameSitePolicy = SameSiteMode.Lax;
+            });
+
+            // Cookie Config
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(options =>
+                {
+                    options.Cookie.Name = "openblog.auth";
+                    options.EventsType = typeof(CustomCookieAuthenticationEvents);
+                });
+
+            #endregion
+
+            #region Installation
+
+            services.AddSingleton<InstallTokenService>();
+            services.AddHostedService<InstallTokenHostService>();
+
+            #endregion
+
+            #region Application Service & Repository
+
+            services.AddScoped<IPostRepository, PostRepository>();
 
             #endregion
 
@@ -120,7 +127,6 @@ namespace OpenBlog.Web
 
             // Register the Swagger generator, defining 1 or more Swagger documents
             services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo {Title = "My API", Version = "v1"}); });
-            services.AddHostedService<InstallTokenHostService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -137,6 +143,7 @@ namespace OpenBlog.Web
                 app.UseHsts();
             }
 
+            app.UseStatusCodePagesWithReExecute("/Home/RouteNoMatch", "?httpStatusCode={0}");
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
@@ -146,20 +153,22 @@ namespace OpenBlog.Web
 
             // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
             // specifying the Swagger JSON endpoint.
-            app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1"); });
+            app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "OpenBlog API V1"); });
             app.UseMiddleware<InstallCheckMiddleware>();
             app.UseRouting();
 
-            // ��֤
+            // Authentication
             app.UseAuthentication();
 
-            // ��Ȩ
+            // Authorization
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(name: "HomePage", pattern: "",
                     new {controller = "Home", action = "Index"});
+                endpoints.MapControllerRoute(name: "FormSubmitRoute", pattern: "form-submit",
+                    new {controller = "GenericPage", action = "FormSubmit"});
                 endpoints.MapDynamicControllerRoute<BloggerTransformer>("blog/{category}/{*slug}");
                 endpoints.MapDynamicControllerRoute<BloggerTransformer>("blog/{year}/{month}/{*slug}");
                 endpoints.MapControllerRoute(name: "default", pattern: "{controller=Home}/{action=Index}/{id?}");

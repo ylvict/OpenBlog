@@ -1,2 +1,93 @@
-<h2>Contact Page</h2>
-
+<h1>Contact</h1>
+<hr/>
+<div class="row">
+    <div class="col-md-12">
+        <form id="contact_form" method="post" action="~/form-submit">
+            <input type="hidden" name="form-type" value="contact"/>
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label class="control-label">Name</label>
+                <input type="text" name="Name" class="form-control"/>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Email</label>
+                <input type="text" name="Email" class="form-control"/>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Message</label>
+                <input type="text" name="Message" class="form-control"/>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Submit" class="btn btn-primary"/>
+            </div>
+        </form>
+    </div>
+</div>
+@section Scripts
+{
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js" asp-append-version="true"></script>
+    <script src="~/lib/jquery-validate.bootstrap-tooltip.min.js" asp-append-version="true"></script>
+    <script>
+        $(document).ready(function () {
+            $("#contact_form").validate({
+                rules: {
+                    Name: {
+                        required: true
+                    },
+                    Email: {
+                        required: true
+                    },
+                    Message: {
+                        required: true
+                    }
+                },
+                messages: {
+                    Name: {
+                        required: "Name is required"
+                    },
+                    QQ: {
+                        required: "Email is required"
+                    },
+                    Content: {
+                        required: "Message is required"
+                    }
+                },
+                tooltip_options: {
+                    thefield: { placement: 'left' }
+                },
+                //errorClass: "help-inline text-danger",
+                //errorElement: "span",
+                highlight: function (element, errorClass, validClass) {
+                    $(element).parents('.form-group').addClass('has-error');
+                },
+                unhighlight: function (element, errorClass, validClass) {
+                    $(element).parents('.form-group').removeClass('has-error');
+                    $(element).parents('.form-group').addClass('has-success');
+                },
+                submitHandler: function (form, e) {
+                    e.preventDefault();
+                    console.log('Form submitted');
+                    $.ajax({
+                        type: 'POST',
+                        url: '/form-submit',
+                        dataType: "html",
+                        data: $(form).serialize(),
+                        success: function (result) {
+                            if (result.length === 0) {
+                                window.alert("submit success");
+                            }
+                            else {
+                                console.log(result);
+                                window.alert("submit fail");
+                            }
+                        },
+                        error: function (error) {
+                            console.log(error);
+                        }
+                    });
+                    return false;
+                }
+            });
+        });
+    </script>
+}

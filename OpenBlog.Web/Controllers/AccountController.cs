@@ -1,17 +1,16 @@
-﻿using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using OpenBlog.DomainModels;
-using OpenBlog.Web.Models;
-using OpenBlog.WebFramework;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Security.Claims;
-using System.Security.Cryptography;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Niusys.Security;
+using OpenBlog.DomainModels;
+using OpenBlog.Web.Models;
+using OpenBlog.Web.WebFramework;
 
 namespace OpenBlog.Web.Controllers
 {
@@ -34,8 +33,11 @@ namespace OpenBlog.Web.Controllers
         public async Task<IActionResult> LoginPost(LoginViewModel loginViewModel,[FromServices]IEncryptionService encryptionService)
         {
             var user = await _userRepository.GetUserByEmail(loginViewModel.Email);
-            if (user == null) 
-                return Content("User not Found.");
+            if (user == null)
+            {
+                ModelState.AddModelError("", "用户不存在");
+                return View();
+            }
 
             var newPasswordHash =
                 encryptionService.CreatePasswordHash(loginViewModel.Password, user.PasswordSalt, "SHA256");

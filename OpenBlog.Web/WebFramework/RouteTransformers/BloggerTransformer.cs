@@ -7,11 +7,10 @@ namespace OpenBlog.Web.WebFramework.RouteTransformers
 {
     public class BloggerTransformer : DynamicRouteValueTransformer
     {
-        public async override ValueTask<RouteValueDictionary> TransformAsync(HttpContext httpContext,
+        public override async ValueTask<RouteValueDictionary> TransformAsync(HttpContext httpContext,
             RouteValueDictionary values)
         {
-            if (values == null)
-                values = new RouteValueDictionary();
+            values ??= new RouteValueDictionary();
             
             var slug = values["slug"]?.ToString().TrimEnd('/').ToLower();
             if (string.IsNullOrWhiteSpace(slug))
