@@ -86,7 +86,7 @@ namespace OpenBlog.Web
 
             #region Security Part (UserIdentity & Authentication & Authorization)
 
-            services.AddScoped<CustomCookieAuthenticationEvents>();
+            services.AddScoped<IRequestSession, DefaultRequestSession>();
             services.AddScoped<IUserSession, UserSession>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddSingleton<IEncryptionService, EncryptionService>();
@@ -97,6 +97,7 @@ namespace OpenBlog.Web
             });
 
             // Cookie Config
+            services.AddScoped<CustomCookieAuthenticationEvents>();
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options =>
                 {
@@ -117,6 +118,7 @@ namespace OpenBlog.Web
 
             services.AddScoped<INotificationService, NotificationService>();
             services.AddScoped<IPostRepository, PostRepository>();
+            services.AddScoped<ICommentRepository, CommentRepository>();
 
             #endregion
 

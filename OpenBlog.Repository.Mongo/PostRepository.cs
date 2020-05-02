@@ -36,18 +36,20 @@ namespace OpenBlog.Repository.Mongo
             var filterBuilder = Builders<PostEntity>.Filter;
             var sortBuilder = Builders<PostEntity>.Sort;
             var sort = sortBuilder.Descending(x => x.CreateTime);
-            var searchResult = await _postRep.PaginationSearchAsync(filterBuilder.Empty, sort, pageIndex: pageIndex, pageSize: pageSize);
+            var searchResult = await _postRep.PaginationSearchAsync(filterBuilder.Empty, sort, pageIndex: pageIndex,
+                pageSize: pageSize);
             return _mapper.Map<Page<Post>>(searchResult);
         }
 
         public async Task<Post> GetPost(string postId)
         {
-            var postEntity= await _postRep.GetByPropertyAsync(x => x.Sysid, postId.SafeToObjectId());
+            var postEntity = await _postRep.GetByPropertyAsync(x => x.Sysid, postId.SafeToObjectId());
             return _mapper.Map<Post>(postEntity);
         }
+
         public async Task<Post> GetPostBySlug(string slug)
         {
-            var postEntity= await _postRep.GetByPropertyAsync(x => x.Slug, slug);
+            var postEntity = await _postRep.GetByPropertyAsync(x => x.Slug, slug);
             return _mapper.Map<Post>(postEntity);
         }
     }

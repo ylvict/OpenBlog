@@ -14,11 +14,17 @@ namespace OpenBlog.Repository.Mongo
             CreateMap(typeof(Page<>), typeof(Page<>)).ConvertUsing(typeof(TrackedPropertyToPropertyVersionConverter<,>));
 
             CreateMap<Post, PostEntity>()
-                .ForMember(d => d.Sysid, mo => mo.MapFrom(s => s.Sysid.SafeToObjectId()));
+                .ForMember(d => d.Sysid, mo => mo.MapFrom(s => s.PostId.SafeToObjectId()));
             CreateMap<PostEntity, Post>()
-                .ForMember(d => d.Sysid, mo => mo.MapFrom(s => s.Sysid.ToString()))
+                .ForMember(d => d.PostId, mo => mo.MapFrom(s => s.Sysid.ToString()))
                 .ForMember(d=>d.Categories,mo=>mo.MapFrom(s=>s.Categories))
                 .ForMember(d=>d.Tags,mo=>mo.MapFrom(s=>s.Tags))
+                ;
+            
+            CreateMap<Comment, CommentEntity>()
+                .ForMember(d => d.Sysid, mo => mo.MapFrom(s => s.CommentId.SafeToObjectId()));
+            CreateMap<CommentEntity, Comment>()
+                .ForMember(d => d.CommentId, mo => mo.MapFrom(s => s.Sysid.ToString()))
                 ;
 
             CreateMap<string, Category>()

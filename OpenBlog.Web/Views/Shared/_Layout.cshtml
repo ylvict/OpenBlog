@@ -3,9 +3,12 @@
 <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>@ViewData["Title"] - OpenBlog</title>
+    <title>@Title</title>
+    <meta type="keywords" value="@Keywords"/>
+    <meta type="description" value="@Description"/>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" asp-append-version="true"/>
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/>
+    <link rel="canonical" href="@CanonicalUrl"/>
     @await RenderSectionAsync("Styles", required: false)
 </head>
 <body>
@@ -52,7 +55,7 @@
     </nav>
 </header>
 <div class="container">
-    <partial name="_CookieConsentPartial" />
+    <partial name="_CookieConsentPartial"/>
     <partial name="_Notification"/>
     <main role="main" class="pb-3">
         @RenderBody()

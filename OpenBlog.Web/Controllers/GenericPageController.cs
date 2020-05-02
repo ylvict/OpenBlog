@@ -7,9 +7,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ViewEngines;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using MimeKit;
 using Niusys;
+using OpenBlog.DomainModels;
+using OpenBlog.Repository.Mongo;
 using OpenBlog.Web.Models;
 using OpenBlog.Web.Services.EmailServices;
 
@@ -75,9 +78,23 @@ namespace OpenBlog.Web.Controllers
 
             try
             {
-                if (Request.Form.ContainsKey("form_type") && Request.Form["form_type"].ToString().Equals("contact"))
+                if (!Request.Form.ContainsKey("form_type"))
                 {
-                    await ProcessContactMessage(emailService, emailReceiversOptions.Value);
+                    return Ok();
+                }
+
+                switch (Request.Form["form_type"].ToString())
+                {
+                    case "contact":
+                        // Contact Form Submit
+                        await ProcessContactMessage(emailService, emailReceiversOptions.Value);
+                        break;
+                    case "postComment":
+                        // Blog Post Comment Form Submit
+                        await ProcessBlogPostComment();
+                        break;
+                    default:
+                        break;
                 }
 
                 return Ok();
@@ -86,6 +103,32 @@ namespace OpenBlog.Web.Controllers
             {
                 return Content(ex.FullMessage());
             }
+        }
+
+        private async Task ProcessBlogPostComment()
+        {
+            var model = new PostCommentModel();
+
+            var formValueProvider = new FormValueProvider(BindingSource.Form, Request.Form, CultureInfo.CurrentCulture);
+            await TryUpdateModelAsync(model, prefix: "", valueProvider: formValueProvider);
+
+            var commentRep = HttpContext.RequestServices.GetRequiredService<ICommentRepository>();
+            var commentModel = new Comment()
+            {
+                PostId = model.CommentPostId, CommentParentId = model.CommentParentId, Author = model.Author,
+                Email = model.Email, Url = model.Url, Content = model.Content
+            };
+            await commentRep.CreateCommentForPost(commentModel);
+        }
+
+        class PostCommentModel
+        {
+            public string CommentPostId { get; set; }
+            public string CommentParentId { get; set; }
+            public string Author { get; set; }
+            public string Email { get; set; }
+            public string Url { get; set; }
+            public string Content { get; set; }
         }
 
         #region Message Handler

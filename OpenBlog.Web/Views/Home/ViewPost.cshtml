@@ -4,6 +4,27 @@
     ViewData["Title"] = "ViewPost";
 }
 
+@section Styles
+{
+    <style>
+        .post-comments{
+            margin-top:20px;
+            border-top:solid 1px #ccc;
+        }
+        .comment-item
+        {
+            margin:5px 2px;
+            border-bottom: dashed 1px #6c757d;
+        }
+        .comment-reply-list
+        {
+             margin:5px 2px;
+             padding-left: 50px;
+             border-bottom: dashed 1px #e2e3e5;
+        }
+    </style>
+}
+
 <section class="post-detail">
     <div class="post-detail-header">
         <h1>@Model.Title</h1>
@@ -11,7 +32,105 @@
         <span>最后更新时间</span>@Html.Raw(Model.UpdateTime)
     </div>
     <div class="post-detail-content">
-            @Html.Raw(Model.Content)
+        @Html.Raw(Model.Content)
     </div>
     <div class="post-detail-footer"></div>
 </section>
+<section class="post-comments">
+    @if (Model.CommentList != null && Model.CommentList.Paging.Total > 0)
+    {
+        <div class="comment-list">
+            @{
+                var paging = Model.CommentList.Paging;
+            }
+            @for (int i = 0; i < Model.CommentList.Records.Count; i++)
+            {
+                var comment = Model.CommentList.Records[i];
+                var floorNo = (paging.PageIndex - 1) * paging.PageSize + i + 1;
+                <div class="comment-item">
+                    <p>
+                        <a href="#@(comment.CommentId)">#@floorNo</a>
+                        @comment.Author 在 @comment.CreateTime 说:
+                    </p>
+                    <p>@Html.Raw(comment.Content)</p>
+                    @if (comment.ReplyComments != null && comment.ReplyComments.Any())
+                    {
+                        <div class="comment-reply-list">
+                            @foreach (var commentReply in comment.ReplyComments)
+                            {
+                                <div class="comment-reply-item">
+                                    <p>@comment.Author 说:</p>
+                                    <p>@Html.Raw(comment.Content)</p>
+                                    <p>Comment Time:@comment.CreateTime</p>
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+    }
+    <div class="new-comment">
+        <strong>New Comments</strong>
+        <form action="/form-submit" method="post" id="comment_form" class="comment-form">
+            <div class="form-group">
+                <textarea placeholder="Add your comment here..." name="Content" class="form-control" id="comment" rows="5" tabindex="4" required ></textarea>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-3">
+                    <input type="text" placeholder="Name (Required)" name="Author" id="author" value="" tabindex="1" required class="form-control">
+                </div>
+                <div class="form-group col-md-3">
+                    <input type="text" placeholder="Email (Required)" name="Email" id="email" value="" tabindex="1" required class="form-control">
+                </div>
+                <div class="form-group col-md-3">
+                    <input type="text" placeholder="Website URL" name="Url" id="url" value="" tabindex="1" class="form-control">
+                </div>
+            </div>
+            <div class="form-group">
+                <input name="submit" type="submit" id="submit" class="submit" value="Post Comment">
+                <input type="hidden" name="form_type" value="postComment">
+                <input type="hidden" name="CommentPostId" value="@Model.PostId">
+                <input type="hidden" name="CommentParentId" id="comment_parent">
+            </div>
+        </form>
+    </div>
+</section>
+
+@section Scripts
+{
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js" asp-append-version="true"></script>
+    <script src="~/lib/jquery-validate.bootstrap-tooltip.min.js" asp-append-version="true"></script>
+    <script>
+            $(document).ready(function () {
+                $("#comment_form").validate({
+                    tooltip_options: {
+                        thefield: { placement: 'left' }
+                    },
+                    submitHandler: function (form, e) {
+                        e.preventDefault();
+                        console.log('Form submitted');
+                        $.ajax({
+                            type: 'POST',
+                            url: '/form-submit',
+                            dataType: "html",
+                            data: $(form).serialize(),
+                            success: function (result) {
+                                if (result.length === 0) {
+                                    window.alert("submit success");
+                                }
+                                else {
+                                    console.log(result);
+                                    window.alert("submit fail");
+                                }
+                            },
+                            error: function (error) {
+                                console.log(error);
+                            }
+                        });
+                        return false;
+                    }
+                });
+            });
+        </script>
+}

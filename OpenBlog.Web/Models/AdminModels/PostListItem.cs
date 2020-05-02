@@ -42,7 +42,7 @@ namespace OpenBlog.Web.Models.AdminModels
         {
             CreateMap<PostCreateViewModel, Post>();
             CreateMap<Post, PostListItem>()
-                .ForMember(d => d.PostId, mo => mo.MapFrom(s => s.Sysid));
+                .ForMember(d => d.PostId, mo => mo.MapFrom(s => s.PostId));
         }
     }
 }

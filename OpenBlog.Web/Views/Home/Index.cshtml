@@ -23,7 +23,7 @@
     {
         <div class="post" data-post-id="@item.PostId">
             <div class="post-header">
-                <a asp-action="ViewPost" asp-controller="Home" asp-route-postId="@item.PostId">@item.Title</a>
+                <a href=@($"/blog/{item.CreateTime.Year}/{item.CreateTime.Month}/{item.Slug??item.PostId}")>@item.Title</a>
             </div>
             <div class="post-summary">@item.Summary</div>
             <div class="post-footer">

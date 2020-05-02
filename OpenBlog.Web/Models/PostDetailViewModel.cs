@@ -1,19 +1,14 @@
-﻿using System;
+using System;
+using System.Collections.Generic;
+using Niusys.Extensions.ComponentModels;
 
 namespace OpenBlog.Web.Models
 {
-    /// <summary>
-    /// 公共页面展示列表项模型
-    /// </summary>
-    public class PostPublicListItem
+    public class PostDetailViewModel
     {
         public string PostId { get; set; }
         public string Title { get; set; }
-
-        /// <summary>
-        /// 描述概要
-        /// </summary>
-        public string Summary { get; set; }
+        public string Content { get; set; }
 
         /// <summary>
         /// 博客URL
@@ -29,5 +24,7 @@ namespace OpenBlog.Web.Models
         /// 最后更新时间
         /// </summary>
         public DateTime UpdateTime { get; set; }
+        
+        public Page<CommentListItemViewModel> CommentList { get; set; }
     }
 }

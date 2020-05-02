@@ -10,7 +10,7 @@ namespace OpenBlog.DomainModels
     /// </summary>
     public class Post
     {
-        public string Sysid { get; set; }
+        public string PostId { get; set; }
         
         /// <summary>
         /// 标题
