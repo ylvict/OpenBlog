@@ -14,8 +14,7 @@
         @Html.PasswordFor(x => x.Password)
     </div>
     <div class="form-group">
-        <label for="IsRemberme">记住我?</label>
-        @Html.CheckBoxFor(x => x.IsRemberme, new {@class = "form-control"})
+        @Html.CheckBoxFor(x => x.IsRemberme) <label for="IsRemberme">记住我?</label>
     </div>
     <div class="form-group">
         <label for="IsRemberme">记住时长</label>

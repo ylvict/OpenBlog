@@ -14,9 +14,10 @@ using OpenBlog.Web.WebFramework;
 
 namespace OpenBlog.Web.Controllers
 {
-    public class AccountController : Controller
+    public class AccountController : BaseController
     {
         private readonly IUserRepository _userRepository;
+
         public AccountController(IUserRepository userRepository)
         {
             _userRepository = userRepository;
@@ -30,11 +31,13 @@ namespace OpenBlog.Web.Controllers
         }
 
         [HttpPost, ActionName("Login")]
-        public async Task<IActionResult> LoginPost(LoginViewModel loginViewModel,[FromServices]IEncryptionService encryptionService)
+        public async Task<IActionResult> LoginPost(LoginViewModel loginViewModel,
+            [FromServices] IEncryptionService encryptionService)
         {
             var user = await _userRepository.GetUserByEmail(loginViewModel.Email);
             if (user == null)
             {
+                ErrorNotification("用户不存在");
                 ModelState.AddModelError("", "用户不存在");
                 return View();
             }
@@ -64,7 +67,7 @@ namespace OpenBlog.Web.Controllers
                 // Refreshing the authentication session should be allowed.
 
                 // 记住cookie默认三天
-                ExpiresUtc = DateTimeOffset.UtcNow.AddDays((int)loginViewModel.RemberDays),
+                ExpiresUtc = DateTimeOffset.UtcNow.AddDays((int) loginViewModel.RemberDays),
                 // The time at which the authentication ticket expires. A 
                 // value set here overrides the ExpireTimeSpan option of 
                 // CookieAuthenticationOptions set with AddCookie.
@@ -83,8 +86,9 @@ namespace OpenBlog.Web.Controllers
                 // redirect response value.
             };
 
-            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
-
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
+                new ClaimsPrincipal(claimsIdentity), authProperties);
+            SuccessNotification("登录成功");
             return RedirectToRoute("HomePage");
         }
 

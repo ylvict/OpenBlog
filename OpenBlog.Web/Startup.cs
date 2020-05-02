@@ -22,6 +22,7 @@ using OpenBlog.Repository.Mongo;
 using OpenBlog.Web.HostedServices;
 using OpenBlog.Web.Services;
 using OpenBlog.Web.WebFramework.Middlewares;
+using OpenBlog.Web.WebFramework.Notifications;
 using OpenBlog.Web.WebFramework.RouteTransformers;
 using OpenBlog.Web.WebFramework.Sessions;
 
@@ -91,8 +92,8 @@ namespace OpenBlog.Web
             services.AddSingleton<IEncryptionService, EncryptionService>();
             services.Configure<CookiePolicyOptions>(options =>
             {
-                options.CheckConsentNeeded = context => false;
-                options.MinimumSameSitePolicy = SameSiteMode.Lax;
+                options.CheckConsentNeeded = context => true;
+                options.MinimumSameSitePolicy = SameSiteMode.Strict;
             });
 
             // Cookie Config
@@ -114,6 +115,7 @@ namespace OpenBlog.Web
 
             #region Application Service & Repository
 
+            services.AddScoped<INotificationService, NotificationService>();
             services.AddScoped<IPostRepository, PostRepository>();
 
             #endregion
