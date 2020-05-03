@@ -18,7 +18,7 @@ namespace OpenBlog.Web.Controllers
 {
     [Route("api/file")]
     [ApiController]
-    public class FileController : BlogWebControllerBase
+    public class FileController : BaseController
     {
         private readonly FormOptions _defaultFormOptions;
         private readonly long _fileSizeLimit;

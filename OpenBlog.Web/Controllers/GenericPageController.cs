@@ -14,6 +14,7 @@ using Niusys;
 using OpenBlog.DomainModels;
 using OpenBlog.Repository.Mongo;
 using OpenBlog.Web.Models;
+using OpenBlog.Web.Services;
 using OpenBlog.Web.Services.EmailServices;
 
 namespace OpenBlog.Web.Controllers
@@ -87,11 +88,11 @@ namespace OpenBlog.Web.Controllers
                 {
                     case "contact":
                         // Contact Form Submit
-                        await ProcessContactMessage(emailService, emailReceiversOptions.Value);
+                        await ProcessContactFormSubmit();
                         break;
                     case "postComment":
                         // Blog Post Comment Form Submit
-                        await ProcessBlogPostComment();
+                        await ProcessPostCommentFormSubmit();
                         break;
                     default:
                         break;
@@ -105,18 +106,29 @@ namespace OpenBlog.Web.Controllers
             }
         }
 
-        private async Task ProcessBlogPostComment()
+        #region Contact Form
+        private async Task ProcessContactFormSubmit()
         {
-            var model = new PostCommentModel();
+            var model = await GetBindModel<ContactService.ContactSubmitViewModel>();
+            var contactService = HttpContext.RequestServices.GetRequiredService<ContactService>();
+            await contactService.ProcessContactMessage(model);
+        }
+        #endregion
 
-            var formValueProvider = new FormValueProvider(BindingSource.Form, Request.Form, CultureInfo.CurrentCulture);
-            await TryUpdateModelAsync(model, prefix: "", valueProvider: formValueProvider);
+        #region Post Comment Form
+        private async Task ProcessPostCommentFormSubmit()
+        {
+            var model = await GetBindModel<PostCommentModel>();
 
             var commentRep = HttpContext.RequestServices.GetRequiredService<ICommentRepository>();
             var commentModel = new Comment()
             {
-                PostId = model.CommentPostId, CommentParentId = model.CommentParentId, Author = model.Author,
-                Email = model.Email, Url = model.Url, Content = model.Content
+                PostId = model.CommentPostId,
+                CommentParentId = model.CommentParentId,
+                Author = model.Author,
+                Email = model.Email,
+                Url = model.Url,
+                Content = model.Content
             };
             await commentRep.CreateCommentForPost(commentModel);
         }
@@ -130,21 +142,16 @@ namespace OpenBlog.Web.Controllers
             public string Url { get; set; }
             public string Content { get; set; }
         }
+        #endregion
 
-        #region Message Handler
-
-        private async Task ProcessContactMessage(EmailService emailService, EmailReceivers emailReceiversOptions)
+        #region Utils
+        private async Task<T> GetBindModel<T>() where T : class, new()
         {
-            var model = new ContactSubmitViewModel();
-
+            var model = new T();
             var formValueProvider = new FormValueProvider(BindingSource.Form, Request.Form, CultureInfo.CurrentCulture);
             await TryUpdateModelAsync(model, prefix: "", valueProvider: formValueProvider);
-
-            var subject = $"OpenBlog New Connect";
-            var content = $"Name: {model.Name} <br/> Email:{model.Email}  <br/> Message:{model.Message}";
-            await emailService.SendEmailAsync(emailReceiversOptions.Contacts, subject, content);
+            return model;
         }
-
         #endregion
     }
 }
