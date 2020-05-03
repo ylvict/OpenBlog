@@ -71,6 +71,8 @@ namespace OpenBlog.Web
             #endregion
 
             #region Mvc Configuration
+            
+            services.AddRouting(options => options.LowercaseUrls = true);
 
             services.AddControllersWithViews()
                 .AddFluentValidation();
@@ -131,7 +133,7 @@ namespace OpenBlog.Web
             #endregion
 
             // Register the Swagger generator, defining 1 or more Swagger documents
-            services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo {Title = "My API", Version = "v1"}); });
+            services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" }); });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -170,12 +172,11 @@ namespace OpenBlog.Web
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllerRoute(name: "HomePage", pattern: "",
-                    new {controller = "Home", action = "Index"});
-                endpoints.MapControllerRoute(name: "FormSubmitRoute", pattern: "form-submit",
-                    new {controller = "GenericPage", action = "FormSubmit"});
-                endpoints.MapDynamicControllerRoute<BloggerTransformer>("blog/{category}/{*slug}");
+                endpoints.MapControllerRoute(name: "HomePage", pattern: "", new { controller = "Post", action = "Index" });
+                endpoints.MapControllerRoute(name: "FormSubmitRoute", pattern: "form-submit", new { controller = "GenericPage", action = "FormSubmit" });
+                endpoints.MapDynamicControllerRoute<BloggerTransformer>("blog/{category?}/{*slug}");
                 endpoints.MapDynamicControllerRoute<BloggerTransformer>("blog/{year}/{month}/{*slug}");
+                endpoints.MapControllerRoute(name: "MyArea", pattern: "{area:exists}/{controller=Home}/{action=Index}");
                 endpoints.MapControllerRoute(name: "default", pattern: "{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapDynamicControllerRoute<GenericPageTransformer>("{slug}");
             });

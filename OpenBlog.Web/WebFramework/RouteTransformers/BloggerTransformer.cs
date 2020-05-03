@@ -22,12 +22,12 @@ namespace OpenBlog.Web.WebFramework.RouteTransformers
                 switch (urlCategoryPart.ToLower())
                 {
                     case "category":
-                        values.TryAdd("controller", "Home");
+                        values.TryAdd("controller", "Post");
                         values.TryAdd("action", "PostListByCategory");
                         values.TryAdd("categoryName", slug);
                         break;
                     case "tag":
-                        values.TryAdd("controller", "Home");
+                        values.TryAdd("controller", "Post");
                         values.TryAdd("action", "PostListByTag");
                         values.TryAdd("tagName", slug);
                         break;
@@ -37,7 +37,7 @@ namespace OpenBlog.Web.WebFramework.RouteTransformers
             }
             else
             {
-                values.TryAdd("controller", "Home");
+                values.TryAdd("controller", "Post");
                 values.TryAdd("action", "ViewPostBySlug");
                 values.TryAdd("slug", slug);
             }

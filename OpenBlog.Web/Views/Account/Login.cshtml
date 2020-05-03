@@ -2,25 +2,28 @@
 @{
     ViewData["Title"] = "Home Page";
 }
-
-<form asp-controller="Account" asp-action="Login" method="post">
-    <div asp-validation-summary="All" class="text-danger"></div>
-    <div class="form-group">
-        <label for="Emial">邮箱</label>
-        @Html.TextBoxFor(x => x.Email)
+<div class="row justify-content-md-center">
+    <div class="col-md-auto">
+        <form asp-controller="Account" asp-action="Login" method="post">
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <div class="form-group">
+                <label for="Emial">邮箱</label>
+                @Html.TextBoxFor(x => x.Email)
+            </div>
+            <div class="form-group">
+                <label for="Password">密码</label>
+                @Html.PasswordFor(x => x.Password)
+            </div>
+            <div class="form-group">
+                @Html.CheckBoxFor(x => x.IsRemberme) <label for="IsRemberme">记住我?</label>
+            </div>
+            <div class="form-group">
+                <label for="IsRemberme">记住时长</label>
+                <select asp-for="RemberDays" asp-items="Html.GetEnumDescriptionSelectList<RemeberOptions>()">
+                    <option selected="selected" value="">Please select</option>
+                </select>
+            </div>
+            <input type="submit" value="Login" />
+        </form>
     </div>
-    <div class="form-group">
-        <label for="Password">密码</label>
-        @Html.PasswordFor(x => x.Password)
-    </div>
-    <div class="form-group">
-        @Html.CheckBoxFor(x => x.IsRemberme) <label for="IsRemberme">记住我?</label>
-    </div>
-    <div class="form-group">
-        <label for="IsRemberme">记住时长</label>
-        <select asp-for="RemberDays" asp-items="Html.GetEnumDescriptionSelectList<RemeberOptions>()">
-            <option selected="selected" value="">Please select</option>
-        </select>
-    </div>
-    <input type="submit" value="Login"/>
-</form>
+</div>

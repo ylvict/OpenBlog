@@ -1,4 +1,4 @@
-﻿@{ 
+﻿@{
     Layout = "_Layout.Root";
 }
 @section Styles
@@ -6,9 +6,8 @@
     @await RenderSectionAsync("Styles", required: false)
 }
 <div class="container">
-    <partial name="_CookieConsentPartial" />
     <partial name="_Notification" />
-    <main role="main" class="pb-3 page">
+    <main role="main" class="pb-3">
         @RenderBody()
     </main>
 </div>

@@ -1,0 +1,44 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@Title</title>
+    <meta type="keywords" value="@Keywords" />
+    <meta type="description" value="@Description" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="canonical" href="@CanonicalUrl" />
+    @await RenderSectionAsync("Styles", required: false)
+</head>
+<body>
+    <header>
+        <partial name="_NavMenu" />
+    </header>
+
+    @RenderBody()
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            <ul class="nav  nav-pills nav-fill">
+                <li class="nav-item">
+                    <a class="nav-link text-dark" href="~/about">关于</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" href="~/contact">联系</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" href="~/history">开发历史</a>
+                </li>
+            </ul>
+            <div class="text-center">
+                <span class="copy-right">&copy; 2020 - OpenBlog</span>
+            </div>
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js" asp-append-version="true"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js" asp-append-version="true"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
