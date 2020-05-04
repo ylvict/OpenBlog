@@ -1,30 +1,30 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OpenBlog.DomainModels;
-using OpenBlog.Web.Models.AdminModels;
+using OpenBlog.Web.Areas.Admin.Models;
 
-namespace OpenBlog.Web.Controllers
+namespace OpenBlog.Web.Areas.Admin.Controllers
 {
-    [Authorize]
-    public class AdminController : Controller
-    {
+    [Area("Admin")]
+    public class PostController : AdminBaseController
+    { 
         private readonly IPostRepository _postRepository;
         private readonly IMapper _mapper;
 
-        public AdminController(IPostRepository postRepository, IMapper mapper)
+        public PostController(IPostRepository postRepository, IMapper mapper)
         {
             _postRepository = postRepository;
             _mapper = mapper;
         }
-
+        
+        [HttpGet]
         public IActionResult Index()
         {
             return RedirectToAction(nameof(PostList));
         }
-
+        
         [HttpGet]
         public IActionResult NewPost()
         {

@@ -1,17 +1,7 @@
 using System;
-using AutoMapper;
-using OpenBlog.DomainModels;
 
-namespace OpenBlog.Web.Models.AdminModels
+namespace OpenBlog.Web.Areas.Admin.Models
 {
-    public class PostCreateViewModel
-    {
-        public string Title { get; set; }
-        public string Content { get; set; }
-    }
-    
-    
-
     /// <summary>
     /// 公共页面展示列表项模型
     /// </summary>
@@ -34,15 +24,5 @@ namespace OpenBlog.Web.Models.AdminModels
         /// 最后更新时间
         /// </summary>
         public DateTime UpdateTime { get; set; }
-    }
-    
-    public class MappingProfile : Profile
-    {
-        public MappingProfile()
-        {
-            CreateMap<PostCreateViewModel, Post>();
-            CreateMap<Post, PostListItem>()
-                .ForMember(d => d.PostId, mo => mo.MapFrom(s => s.PostId));
-        }
     }
 }

@@ -1,0 +1,29 @@
+@using Microsoft.AspNetCore.Routing
+<ul class="navbar-nav mr-5">
+    @if (ViewContext.RouteData.Values.ContainsKey("area") && !string.IsNullOrEmpty(ViewContext.RouteData.Values["area"]?.ToString()))
+    {
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-route="HomePage">前台首页</a>
+        </li>
+    }
+
+    @if (UserSession.IsAuthenticated)
+    {
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <span>@UserSession.DisplayName</span>
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <a class="dropdown-item disabled" asp-controller="Profile" asp-action="Index">Profile</a>
+                <div class="dropdown-divider"></div>
+                <a asp-controller="Account" asp-action="Logout" class="dropdown-item">Logout</a>
+            </div>
+        </li>
+    }
+    else
+    {
+        <li class="nav-item">
+            <a asp-controller="Account" asp-action="Login">Login</a>
+        </li>
+    }
+</ul>

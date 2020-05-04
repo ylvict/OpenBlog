@@ -1,4 +1,0 @@
-namespace OpenBlog.Web.Models
-{
-
-}

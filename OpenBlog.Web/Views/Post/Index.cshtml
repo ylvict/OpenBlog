@@ -17,37 +17,19 @@
 
 <div class="row">
     <div class="col-md-8">
-        <section class="post-list">
-            @foreach (var item in Model)
-            {
-                <div class="card post-item">
-                    <div class="card-header post-header">
-                        <a href=@($"/blog/{item.CreateTime.Year}/{item.CreateTime.Month}/{item.Slug ?? item.PostId}")>@item.Title</a>
-                    </div>
-                    <div class="card-body">
-                        <p class="card-text">
-                            @item.Summary
-                        </p>
-                    </div>
-                    <div class="card-footer text-muted">
-                        <span>发布时间 @Html.Raw(item.CreateTime)</span>
-                        @if (!item.UpdateTime.Equals(item.CreateTime))
-                        {
-                            <span>最后更新 @Html.Raw(item.UpdateTime)</span>
-                        }
-                    </div>
-                </div>
-            }
-        </section>
+        <partial name="_PostListPartial" model="Model"/>
     </div>
     <div class="col-md-4">
-        <div class="card">
-          <h5 class="card-header">@UserSession.DisplayName</h5>
-          <div class="card-body">
-            <h5 class="card-title">Special title treatment</h5>
-            <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-            <a href="#" class="btn btn-primary">Go somewhere</a>
-          </div>
-        </div>
+        @if (UserSession.IsAuthenticated)
+        {
+            <div class="card">
+                <h5 class="card-header">@UserSession.DisplayName</h5>
+                <div class="card-body">
+                    <h5 class="card-title">Special title treatment</h5>
+                    <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+                    <a href="#" class="btn btn-primary">Go somewhere</a>
+                </div>
+            </div>
+        }
     </div>
 </div>

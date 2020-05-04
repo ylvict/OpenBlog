@@ -82,7 +82,7 @@ namespace OpenBlog.Web.Controllers
         {
             var postSearchResult = await _postRepository.SearchPost(1, 20);
             var postList = _mapper.Map<List<PostPublicListItem>>(postSearchResult.Records);
-            return View(postList);
+            return View(nameof(Index), postList);
         }
 
         [HttpGet]
@@ -90,7 +90,7 @@ namespace OpenBlog.Web.Controllers
         {
             var postSearchResult = await _postRepository.SearchPost(1, 20);
             var postList = _mapper.Map<List<PostPublicListItem>>(postSearchResult.Records);
-            return View(postList);
+            return View(nameof(Index),postList);
         }
     }
 }
