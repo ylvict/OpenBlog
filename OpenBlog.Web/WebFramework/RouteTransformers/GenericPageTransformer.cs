@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Routing;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace OpenBlog.Web.WebFramework.RouteTransformers
 {
@@ -16,7 +17,13 @@ namespace OpenBlog.Web.WebFramework.RouteTransformers
 
     public class GenericPageTransformer : DynamicRouteValueTransformer
     {
-        public static Dictionary<string, string> SlugViewMapping { get; private set; }
+        private readonly ILogger<GenericPageTransformer> _logger;
+
+        public GenericPageTransformer(ILogger<GenericPageTransformer> logger)
+        {
+            _logger = logger;
+        }
+        private static Dictionary<string, string> SlugViewMapping { get; set; }
 
         static GenericPageTransformer()
         {
@@ -28,15 +35,15 @@ namespace OpenBlog.Web.WebFramework.RouteTransformers
             }
         }
 
-        public async override ValueTask<RouteValueDictionary> TransformAsync(HttpContext httpContext,
+        public override async ValueTask<RouteValueDictionary> TransformAsync(HttpContext httpContext,
             RouteValueDictionary values)
         {
-            if (values == null)
-                values = new RouteValueDictionary();
+            values ??= new RouteValueDictionary();
 
-            var slug = values["slug"]?.ToString().TrimEnd('/').ToLower();
+            var slug = values["slug"]?.ToString()?.TrimEnd('/').ToLower();
+            _logger.LogInformation($"Slug:{slug}");
             if (string.IsNullOrWhiteSpace(slug))
-                return values;
+                return null;
 
             //if (Regex.IsMatch(slug, ReservedActionSlug))
             if (SlugViewMapping.ContainsKey(slug))
@@ -48,7 +55,7 @@ namespace OpenBlog.Web.WebFramework.RouteTransformers
             }
 
             await Task.CompletedTask;
-            return values;
+            return null;
         }
     }
 }

@@ -23,6 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\OpenBlog.BlazorWasmService\OpenBlog.BlazorWasmService.csproj" />
     <ProjectReference Include="..\OpenBlog.DomainModels\OpenBlog.DomainModels.csproj" />
     <ProjectReference Include="..\OpenBlog.Infrastructure\OpenBlog.Infrastructure.csproj" />
     <ProjectReference Include="..\OpenBlog.Repository.Mongo\OpenBlog.Repository.Mongo.csproj" />
@@ -45,10 +46,24 @@
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
+    <Content Update="Views\Home\Index.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>
     <_ContentIncludedByDefault Remove="Views\Admin\Index.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\blazorapp\reader" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="OpenBlog.ClientShared, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\OpenBlog.ClientShared\bin\Debug\netstandard2.1\OpenBlog.ClientShared.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

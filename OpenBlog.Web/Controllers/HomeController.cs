@@ -16,6 +16,11 @@ namespace OpenBlog.Web.Controllers
             _logger = logger;
         }
 
+        public IActionResult Index()
+        {
+            return View();
+        }
+
         public IActionResult RouteNoMatch([FromServices] IActionContextAccessor actionContextAccessor,
             [FromServices] ICompositeViewEngine compositeViewEngine, string httpStatusCode)
         {

@@ -1,13 +1,13 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace ApiTest
+namespace OpenBlog.ApiTestConsole
 {
     class TestApp
     {

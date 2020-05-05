@@ -7,16 +7,20 @@
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
-                @if (UserSession.IsAuthenticated)
-                {
-                    <li class="nav-item">
-                        <a class="nav-link text-dark" asp-area="@AreaNames.Admin" asp-action="Index" asp-controller="Home">Admin</a>
-                    </li>
-                }
+                <li class="nav-item">
+                    <a class="nav-link text-dark" href="~/blog">Blog</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" href="~/search">Search</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" href="~/about">About</a>
+                </li>
             </ul>
 
-            <form class="form-inline my-2 my-lg-0">
-                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+            <form id="global_search_form" class="form-inline my-2 my-lg-0" action="/form-submit" method="post">
+                <input type="hidden" name="form_type" value="globalSearch"/>
+                <input class="form-control mr-sm-2" type="search" name="searchText" placeholder="Search" aria-label="Search" value="@ViewBag.SearchText">
                 <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
             </form>
             <partial name="_NavMenuRight"/>

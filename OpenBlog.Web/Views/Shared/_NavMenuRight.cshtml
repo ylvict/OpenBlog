@@ -14,7 +14,14 @@
                 <span>@UserSession.DisplayName</span>
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                <a class="dropdown-item disabled" asp-controller="Profile" asp-action="Index">Profile</a>
+                <a class="dropdown-item" href="~/profile">Profile</a>
+
+                @if (UserSession.IsAuthenticated)
+                {
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" asp-area="@AreaNames.Admin" asp-action="Index" asp-controller="Home">Admin</a>
+                    <a class="dropdown-item" href="~/newadmin">Admin (Blazor)</a>
+                }
                 <div class="dropdown-divider"></div>
                 <a asp-controller="Account" asp-action="Logout" class="dropdown-item">Logout</a>
             </div>
@@ -23,7 +30,7 @@
     else
     {
         <li class="nav-item">
-            <a asp-controller="Account" asp-action="Login">Login</a>
+            <a class="btn btn-outline-success my-2 my-sm-0 m-2" asp-controller="Account" asp-action="Login">Login</a>
         </li>
     }
 </ul>

@@ -14,7 +14,7 @@ using OpenBlog.Web.WebFramework;
 
 namespace OpenBlog.Web.Controllers
 {
-    public class AccountController : BaseController
+    public class AccountController : BaseMvcController
     {
         private readonly IUserRepository _userRepository;
 

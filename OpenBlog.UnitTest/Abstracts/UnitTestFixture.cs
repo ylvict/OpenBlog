@@ -1,12 +1,12 @@
-﻿using AutoMapper;
+﻿using System;
+using System.Linq;
+using AutoMapper;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Niusys.Extensions.TypeFinders;
 using OpenBlog.UnitTest.Testing;
-using System;
-using System.Linq;
 
-namespace OpenBlog.MongoRepositoryTest.Abstracts
+namespace OpenBlog.UnitTest.Abstracts
 {
     public class UnitTestFixture
     {

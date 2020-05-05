@@ -102,3 +102,9 @@ Init Token
 BM0XvkdXNIB7XpJ5OVWNtL1ku5GFl07wyI5aVA6TVKg=
 ==============================================================
 ```
+
+## Blazor APP Publish
+```
+dotnet publish --output OpenBlog.Web/wwwroot/blazorapp/UserCenterWebApp OpenBlog.UserCenterWeb/OpenBlog.UserCenterWeb.csproj
+dotnet publish --output OpenBlog.Web/wwwroot/blazorapp/AdminWebApp OpenBlog.AdminWeb/OpenBlog.AdminWeb.csproj
+```

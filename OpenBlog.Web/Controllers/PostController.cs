@@ -12,7 +12,7 @@ using OpenBlog.Web.Models;
 
 namespace OpenBlog.Web.Controllers
 {
-    public class PostController : BaseController
+    public class PostController : BaseMvcController
     {
         private readonly ILogger<PostController> _logger;
         private readonly IPostRepository _postRepository;
@@ -74,6 +74,7 @@ namespace OpenBlog.Web.Controllers
                     childCommentList.Where(x => x.CommentParentId == currentComment.CommentId).ToList();
                 currentComment.ReplyComments = _mapper.Map<List<CommentListItemViewModel>>(currentCommentReplyList);
             }
+
             return View(nameof(ViewPost), postDetailViewModel);
         }
 
@@ -90,7 +91,15 @@ namespace OpenBlog.Web.Controllers
         {
             var postSearchResult = await _postRepository.SearchPost(1, 20);
             var postList = _mapper.Map<List<PostPublicListItem>>(postSearchResult.Records);
-            return View(nameof(Index),postList);
+            return View(nameof(Index), postList);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> PostListByMonth(int year, int month)
+        {
+            var postSearchResult = await _postRepository.SearchPost(1, 20);
+            var postList = _mapper.Map<List<PostPublicListItem>>(postSearchResult.Records);
+            return View(nameof(Index), postList);
         }
     }
 }

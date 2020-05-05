@@ -1,7 +1,8 @@
 ﻿using System;
 using System.IO;
 using Microsoft.AspNetCore.DataProtection;
-namespace DataProtectorTest
+
+namespace OpenBlog.ApiTestConsole
 {
     public class TestApp
     {

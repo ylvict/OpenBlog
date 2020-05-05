@@ -1,10 +1,10 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using System;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace OpenBlog.MongoRepositoryTest.Abstracts
+namespace OpenBlog.UnitTest.Abstracts
 {
     /// <summary>
     /// 提供测试过程中的IOC支持

@@ -40,10 +40,7 @@ namespace OpenBlog.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> FormSubmit(
-            [FromServices] EmailService emailService,
-            [FromServices] IOptions<EmailSetting> emailSettingOptions,
-            [FromServices] IOptions<EmailReceivers> emailReceiversOptions)
+        public async Task<IActionResult> FormSubmit([FromServices] IOptions<EmailSetting> emailSettingOptions)
         {
             if (!ModelState.IsValid)
             {
@@ -89,22 +86,32 @@ namespace OpenBlog.Web.Controllers
                     case "contact":
                         // Contact Form Submit
                         await ProcessContactFormSubmit();
-                        break;
+                        return Ok();
                     case "postComment":
                         // Blog Post Comment Form Submit
                         await ProcessPostCommentFormSubmit();
-                        break;
+                        return Ok();
+                    case "globalSearch":
+                        var model = await GetBindModel<GlobalSearchForm>();
+                        return Redirect($"/search?q={model.SearchText}");
                     default:
-                        break;
+                        return NotFound();
                 }
-
-                return Ok();
             }
             catch (Exception ex)
             {
                 return Content(ex.FullMessage());
             }
         }
+
+        #region Global Search Form
+
+        class GlobalSearchForm
+        {
+            public string SearchText { get; set; }
+        }
+
+        #endregion
 
         #region Contact Form
         private async Task ProcessContactFormSubmit()

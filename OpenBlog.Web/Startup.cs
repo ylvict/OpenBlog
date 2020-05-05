@@ -16,6 +16,9 @@ using Microsoft.OpenApi.Models;
 using Niusys.Extensions.DependencyInjection;
 using Niusys.Extensions.TypeFinders;
 using Niusys.Security;
+using OpenBlog.BlazorWasmService;
+using OpenBlog.BlazorWasmService.BlazorWasmCli;
+using OpenBlog.BlazorWasmService.Extensions.StaticFiles;
 using OpenBlog.DomainModels;
 using OpenBlog.Infrastructure;
 using OpenBlog.Repository.Mongo;
@@ -71,7 +74,7 @@ namespace OpenBlog.Web
             #endregion
 
             #region Mvc Configuration
-            
+
             services.AddRouting(options => options.LowercaseUrls = true);
 
             services.AddControllersWithViews()
@@ -133,7 +136,12 @@ namespace OpenBlog.Web
             #endregion
 
             // Register the Swagger generator, defining 1 or more Swagger documents
-            services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" }); });
+            services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo {Title = "My API", Version = "v1"}); });
+
+            services.AddMultipleSpaStaticFiles(configuration =>
+            {
+                configuration.RootPath = Path.Combine("wwwroot", "blazorapp");
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -147,11 +155,11 @@ namespace OpenBlog.Web
             {
                 app.UseExceptionHandler("/Home/Error");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
+                // app.UseHsts();
             }
 
             app.UseStatusCodePagesWithReExecute("/Home/RouteNoMatch", "?httpStatusCode={0}");
-            app.UseHttpsRedirection();
+            // app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
 
@@ -161,6 +169,7 @@ namespace OpenBlog.Web
             // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
             // specifying the Swagger JSON endpoint.
             app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "OpenBlog API V1"); });
+
             app.UseMiddleware<InstallCheckMiddleware>();
             app.UseRouting();
 
@@ -172,13 +181,61 @@ namespace OpenBlog.Web
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllerRoute(name: "HomePage", pattern: "", new { controller = "Post", action = "Index" });
-                endpoints.MapControllerRoute(name: "FormSubmitRoute", pattern: "form-submit", new { controller = "GenericPage", action = "FormSubmit" });
-                endpoints.MapDynamicControllerRoute<BloggerTransformer>("blog/{category?}/{*slug}");
+                endpoints.MapControllerRoute(name: "HomePage", pattern: "",
+                    new {controller = "Home", action = "Index"});
+                endpoints.MapControllerRoute(name: "FormSubmitRoute", pattern: "form-submit",
+                    new {controller = "GenericPage", action = "FormSubmit"});
+                endpoints.MapDynamicControllerRoute<BloggerTransformer>("blog/{category?}/{slug?}");
                 endpoints.MapDynamicControllerRoute<BloggerTransformer>("blog/{year}/{month}/{*slug}");
                 endpoints.MapControllerRoute(name: "MyArea", pattern: "{area:exists}/{controller=Home}/{action=Index}");
                 endpoints.MapControllerRoute(name: "default", pattern: "{controller=Home}/{action=Index}/{id?}");
-                endpoints.MapDynamicControllerRoute<GenericPageTransformer>("{slug}");
+                //endpoints.MapDynamicControllerRoute<GenericPageTransformer>("{slug}");
+            });
+
+            app.UseMulitSpa(spaBuilder =>
+            {
+                spaBuilder.Options.PublicPath = "/profile";
+                if (env.IsDevelopment())
+                {
+                    spaBuilder.Options.SourcePath = "../OpenBlog.UserCenterWeb";
+                    spaBuilder.Options.StartupTimeout = TimeSpan.FromSeconds(2);
+                    // 开发环境的public path通过vue中的地址获取
+                    spaBuilder.UseBlazorWasmCliServer(
+                        startScript: $"watch run --pathbase={spaBuilder.Options.PublicPath}");
+                }
+                else
+                {
+                    // 非开发环境需要指定public path跟default page
+                    spaBuilder.Options.DistPath = $"UserCenterWebApp{Path.DirectorySeparatorChar}wwwroot";
+                    spaBuilder.Options.DefaultPage = $"/profile/index.html";
+                    spaBuilder.Options.DefaultPageStaticFileOptions = new StaticFileOptions()
+                    {
+                        RequestPath = spaBuilder.Options.PublicPath
+                    };
+                }
+            });
+            
+            app.UseMulitSpa(spaBuilder =>
+            {
+                spaBuilder.Options.PublicPath = "/newadmin";
+                if (env.IsDevelopment())
+                {
+                    spaBuilder.Options.SourcePath = "../OpenBlog.AdminWeb";
+                    spaBuilder.Options.StartupTimeout = TimeSpan.FromSeconds(2);
+                    // 开发环境的public path通过vue中的地址获取
+                    spaBuilder.UseBlazorWasmCliServer(
+                        startScript: $"watch run --pathbase={spaBuilder.Options.PublicPath}");
+                }
+                else
+                {
+                    // 非开发环境需要指定public path跟default page
+                    spaBuilder.Options.DistPath = $"AdminWebApp{Path.DirectorySeparatorChar}wwwroot";
+                    spaBuilder.Options.DefaultPage = $"{spaBuilder.Options.PublicPath }/index.html";
+                    spaBuilder.Options.DefaultPageStaticFileOptions = new StaticFileOptions()
+                    {
+                        RequestPath = spaBuilder.Options.PublicPath
+                    };
+                }
             });
         }
     }

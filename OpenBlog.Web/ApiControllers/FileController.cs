@@ -1,4 +1,11 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
+using System.Net;
+using System.Text;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -6,19 +13,13 @@ using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Options;
 using Microsoft.Net.Http.Headers;
 using OpenBlog.Web.Models;
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.Net;
-using System.Threading.Tasks;
 using OpenBlog.Web.WebFramework;
 
-namespace OpenBlog.Web.Controllers
+namespace OpenBlog.Web.ApiControllers
 {
     [Route("api/file")]
     [ApiController]
-    public class FileController : BaseController
+    public class FileController : BaseApiController
     {
         private readonly FormOptions _defaultFormOptions;
         private readonly long _fileSizeLimit;
@@ -191,5 +192,23 @@ namespace OpenBlog.Web.Controllers
             }
             return Ok();
         }
+
+        #region Utils
+
+        protected Encoding GetEncoding(MultipartSection section)
+        {
+            var hasMediaTypeHeader = MediaTypeHeaderValue.TryParse(section.ContentType, out var mediaType);
+
+            // UTF-7 is insecure and shouldn't be honored. UTF-8 succeeds in 
+            // most cases.
+            if (!hasMediaTypeHeader || Encoding.UTF7.Equals(mediaType.Encoding))
+            {
+                return Encoding.UTF8;
+            }
+
+            return mediaType.Encoding;
+        }
+
+        #endregion
     }
 }
