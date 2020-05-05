@@ -350,4 +350,4 @@ MigrationBackup/
 .ionide/
 myapp-keys
 DataProtection-Keys
-wwwroot/blazorapp/*
+**/wwwroot/blazorapp/
