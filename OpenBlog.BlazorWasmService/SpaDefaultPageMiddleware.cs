@@ -34,7 +34,7 @@ namespace OpenBlog.BlazorWasmService
             
             // 先处理静态资源文件, 未找到的重置为index.html来处理
             app.UseSpaStaticFilesInternal(options.PublicPath, spaBuilder.Options.DistPath,
-                options.DefaultPageStaticFileOptions ?? new StaticFileOptions(),
+                options.DefaultPageStaticFileOptions,
                 allowFallbackOnServingWebRootFiles: true);
 
             // 剩余的请求全部转发到默认页面

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using AutoMapper;
@@ -8,7 +9,9 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -195,6 +198,9 @@ namespace OpenBlog.Web
             app.UseMulitSpa(spaBuilder =>
             {
                 spaBuilder.Options.PublicPath = "/profile";
+                spaBuilder.Options.DefaultPageStaticFileOptions =
+                    new BlazorStaticFileOptions(spaBuilder.Options.PublicPath);
+                
                 if (env.IsDevelopment())
                 {
                     spaBuilder.Options.SourcePath = "../OpenBlog.UserCenterWeb";
@@ -208,16 +214,15 @@ namespace OpenBlog.Web
                     // 非开发环境需要指定public path跟default page
                     spaBuilder.Options.DistPath = $"UserCenterWebApp{Path.DirectorySeparatorChar}wwwroot";
                     spaBuilder.Options.DefaultPage = $"/profile/index.html";
-                    spaBuilder.Options.DefaultPageStaticFileOptions = new StaticFileOptions()
-                    {
-                        RequestPath = spaBuilder.Options.PublicPath
-                    };
                 }
             });
-            
+
             app.UseMulitSpa(spaBuilder =>
             {
                 spaBuilder.Options.PublicPath = "/newadmin";
+                spaBuilder.Options.DefaultPageStaticFileOptions =
+                    new BlazorStaticFileOptions(spaBuilder.Options.PublicPath);
+
                 if (env.IsDevelopment())
                 {
                     spaBuilder.Options.SourcePath = "../OpenBlog.AdminWeb";
@@ -230,13 +235,26 @@ namespace OpenBlog.Web
                 {
                     // 非开发环境需要指定public path跟default page
                     spaBuilder.Options.DistPath = $"AdminWebApp{Path.DirectorySeparatorChar}wwwroot";
-                    spaBuilder.Options.DefaultPage = $"{spaBuilder.Options.PublicPath }/index.html";
-                    spaBuilder.Options.DefaultPageStaticFileOptions = new StaticFileOptions()
-                    {
-                        RequestPath = spaBuilder.Options.PublicPath
-                    };
+                    spaBuilder.Options.DefaultPage = $"{spaBuilder.Options.PublicPath}/index.html";
                 }
             });
+        }
+    }
+
+    public class BlazorStaticFileOptions : StaticFileOptions
+    {
+        public BlazorStaticFileOptions(string publicPath)
+        {
+            base.RequestPath = publicPath;
+            base.HttpsCompression = HttpsCompressionMode.Compress;
+            var provider = new FileExtensionContentTypeProvider();
+            provider.Mappings.TryAdd(".dll", "application/octet-stream");
+            provider.Mappings.TryAdd(".dat", "application/octet-stream");
+            provider.Mappings.TryAdd(".json", "application/json");
+            provider.Mappings.TryAdd(".wasm", "application/wasm");
+            provider.Mappings.TryAdd(".woff", "application/font-woff");
+            provider.Mappings.TryAdd(".woff2", "application/font-woff");
+            ContentTypeProvider = provider;
         }
     }
 }
