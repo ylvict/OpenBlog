@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.DataProtection;
 
 namespace OpenBlog.ApiTestConsole
 {
-    public class TestApp
+    public partial class TestApp
     {
         public static void Start(string[] args)
         {

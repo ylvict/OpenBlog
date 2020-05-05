@@ -6,7 +6,7 @@ namespace OpenBlog.ApiTestConsole
     {
         static async Task Main(string[] args)
         {
-            DataProtectorTest.TestApp.Start(args);
+            TestApp.Start(args);
         }
     }
 }

@@ -24,6 +24,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\OpenBlog.BlazorWasmService\OpenBlog.BlazorWasmService.csproj" />
+    <ProjectReference Include="..\OpenBlog.ClientShared\OpenBlog.ClientShared.csproj" />
     <ProjectReference Include="..\OpenBlog.DomainModels\OpenBlog.DomainModels.csproj" />
     <ProjectReference Include="..\OpenBlog.Infrastructure\OpenBlog.Infrastructure.csproj" />
     <ProjectReference Include="..\OpenBlog.Repository.Mongo\OpenBlog.Repository.Mongo.csproj" />
@@ -47,6 +48,10 @@
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
     <Content Update="Views\Home\Index.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Update="Areas\Admin\Views\Post\EditPost.cshtml">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>

@@ -9,7 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace OpenBlog.ApiTestConsole
 {
-    class TestApp
+    partial class TestApp
     {
         public static class NamedHttpClients
         {

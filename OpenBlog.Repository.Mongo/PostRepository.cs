@@ -22,13 +22,20 @@ namespace OpenBlog.Repository.Mongo
             _postRep = postRep;
         }
 
-        public async Task<string> CreatePostAsync(Post post)
+        public async Task<string> CreatePostAsync(Post postModel)
         {
-            var postEntity = _mapper.Map<PostEntity>(post);
+            var postEntity = _mapper.Map<PostEntity>(postModel);
             postEntity.CreateTime = DateTime.Now;
             postEntity.UpdateTime = DateTime.Now;
             await _postRep.AddAsync(postEntity);
             return postEntity.Sysid.ToString();
+        }        
+        
+        public async Task ModifyPostAsync(Post postModel)
+        {
+           var postEntity = _mapper.Map<PostEntity>(postModel);
+           postEntity.UpdateTime = DateTime.Now;
+           await _postRep.UpdateAsync(postEntity);
         }
 
         public async Task<Page<Post>> SearchPost(int pageIndex, int pageSize)
