@@ -198,7 +198,7 @@ namespace OpenBlog.Web
                 endpoints.MapDynamicControllerRoute<BloggerTransformer>("blog/{year}/{month}/{*slug}");
                 endpoints.MapControllerRoute(name: "MyArea", pattern: "{area:exists}/{controller=Home}/{action=Index}");
                 endpoints.MapControllerRoute(name: "default", pattern: "{controller=Home}/{action=Index}/{id?}");
-                //endpoints.MapDynamicControllerRoute<GenericPageTransformer>("{slug}");
+                endpoints.MapDynamicControllerRoute<GenericPageTransformer>("{slug}");
             });
 
             app.UseMulitSpa(spaBuilder =>
