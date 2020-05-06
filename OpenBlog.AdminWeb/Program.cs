@@ -17,10 +17,11 @@ namespace OpenBlog.AdminWeb
 
             var services = builder.Services;
 
+            services.AddOptions();
             services.AddBlazoredLocalStorage();
             services.AddAuthorizationCore();
-            services.AddScoped<AuthenticationStateProvider, ApiAuthenticationStateProvider>();
-            //services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<ApiAuthenticationStateProvider>();
+            services.AddScoped<AuthenticationStateProvider>(provider => provider.GetRequiredService<ApiAuthenticationStateProvider>());
 
             builder.RootComponents.Add<App>("app");
 

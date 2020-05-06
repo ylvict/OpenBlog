@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -134,7 +135,8 @@ namespace OpenBlog.Web
                     ValidateIssuerSigningKey = true,
                     ValidIssuer = jwtConfiguration["JwtIssuer"],
                     ValidAudience = jwtConfiguration["JwtAudience"],
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtConfiguration["JwtSecurityKey"]))
+                    IssuerSigningKey =
+                        new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtConfiguration["JwtSecurityKey"]))
                 };
             });
 
@@ -163,7 +165,7 @@ namespace OpenBlog.Web
             #endregion
 
             // Register the Swagger generator, defining 1 or more Swagger documents
-            services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" }); });
+            services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo {Title = "My API", Version = "v1"}); });
 
             services.AddMultipleSpaStaticFiles(configuration =>
             {
@@ -171,6 +173,20 @@ namespace OpenBlog.Web
             });
 
             services.AddMetaWeblog<MetaWeblogProvider>();
+
+            services.AddResponseCompression(options =>
+            {
+                var defaultMimeTypes = ResponseCompressionDefaults.MimeTypes.ToList();
+                if (!defaultMimeTypes.Contains("application/octet-stream"))
+                {
+                    defaultMimeTypes.Add("application/octet-stream");
+                }
+                if (!defaultMimeTypes.Contains("application/wasm"))
+                {
+                    defaultMimeTypes.Add("application/wasm");
+                }
+                options.MimeTypes = defaultMimeTypes;
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -188,6 +204,9 @@ namespace OpenBlog.Web
             }
 
             app.UseStatusCodePagesWithReExecute("/Home/RouteNoMatch", "?httpStatusCode={0}");
+
+            app.UseResponseCompression();
+
             // app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
@@ -214,9 +233,9 @@ namespace OpenBlog.Web
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(name: "HomePage", pattern: "",
-                    new { controller = "Home", action = "Index" });
+                    new {controller = "Home", action = "Index"});
                 endpoints.MapControllerRoute(name: "FormSubmitRoute", pattern: "form-submit",
-                    new { controller = "GenericPage", action = "FormSubmit" });
+                    new {controller = "GenericPage", action = "FormSubmit"});
                 endpoints.MapDynamicControllerRoute<BloggerTransformer>("blog/{category?}/{slug?}");
                 endpoints.MapDynamicControllerRoute<BloggerTransformer>("blog/{year}/{month}/{*slug}");
                 endpoints.MapControllerRoute(name: "MyArea", pattern: "{area:exists}/{controller=Home}/{action=Index}");

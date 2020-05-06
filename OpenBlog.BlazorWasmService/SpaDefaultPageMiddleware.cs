@@ -31,7 +31,7 @@ namespace OpenBlog.BlazorWasmService
             var appBuilder = spaBuilder.ApplicationBuilder;
             var logger = LoggerFinder.GetOrCreateLogger(appBuilder, LogCategoryName);
             logger.LogInformation($"Public path:{options.PublicPath}");
-            
+
             // 先处理静态资源文件, 未找到的重置为index.html来处理
             app.UseSpaStaticFilesInternal(options.PublicPath, spaBuilder.Options.DistPath,
                 options.DefaultPageStaticFileOptions,
@@ -45,12 +45,15 @@ namespace OpenBlog.BlazorWasmService
                 localLogger.LogInformation($"Request {context.Request.Path}");
                 if (!context.Request.Path.StartsWithSegments(PathString.FromUriComponent(options.PublicPath)))
                 {
+                    localLogger.LogInformation(
+                        $"Not public path({options.PublicPath}) Real Path: {context.Request.Path}, Move to next");
                     return next();
                 }
 
                 // If we have an Endpoint, then this is a deferred match - just noop.
                 if (context.GetEndpoint() != null)
                 {
+                    localLogger.LogInformation("context.GetEndpoint() != null, Move to next");
                     return next();
                 }
 
@@ -75,7 +78,8 @@ namespace OpenBlog.BlazorWasmService
 
                 if (!context.Request.Path.StartsWithSegments(PathString.FromUriComponent(options.PublicPath)))
                 {
-                    localLogger.LogInformation("Not public path, Move to next");
+                    localLogger.LogInformation(
+                        $"Not public path({options.PublicPath}) Real Path: {context.Request.Path}, Move to next");
                     return next();
                 }
 
@@ -89,7 +93,7 @@ namespace OpenBlog.BlazorWasmService
                 var message = "The SPA default page middleware could not return the default page " +
                               $"'{options.DefaultPage}' because it was not found, and no other middleware " +
                               "handled the request.\n";
-
+                localLogger.LogWarning(message);
                 // Try to clarify the common scenario where someone runs an application in
                 // Production environment without first publishing the whole application
                 // or at least building the SPA.
