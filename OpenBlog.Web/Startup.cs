@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using AutoMapper;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -15,6 +16,7 @@ using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Niusys.Extensions.DependencyInjection;
 using Niusys.Extensions.TypeFinders;
@@ -31,6 +33,7 @@ using OpenBlog.Web.WebFramework.Middlewares;
 using OpenBlog.Web.WebFramework.Notifications;
 using OpenBlog.Web.WebFramework.RouteTransformers;
 using OpenBlog.Web.WebFramework.Sessions;
+using WilderMinds.MetaWeblog;
 
 namespace OpenBlog.Web
 {
@@ -113,12 +116,27 @@ namespace OpenBlog.Web
 
             // Cookie Config
             services.AddScoped<CustomCookieAuthenticationEvents>();
-            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                .AddCookie(options =>
+            var authenticationBuilder = services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme);
+            authenticationBuilder.AddCookie(options =>
+            {
+                options.Cookie.Name = "openblog.auth";
+                options.EventsType = typeof(CustomCookieAuthenticationEvents);
+            });
+
+            authenticationBuilder.AddJwtBearer(options =>
+            {
+                var jwtConfiguration = Configuration.GetSection("Authentication:JwtSetting");
+                options.TokenValidationParameters = new TokenValidationParameters
                 {
-                    options.Cookie.Name = "openblog.auth";
-                    options.EventsType = typeof(CustomCookieAuthenticationEvents);
-                });
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = jwtConfiguration["JwtIssuer"],
+                    ValidAudience = jwtConfiguration["JwtAudience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtConfiguration["JwtSecurityKey"]))
+                };
+            });
 
             #endregion
 
@@ -145,12 +163,14 @@ namespace OpenBlog.Web
             #endregion
 
             // Register the Swagger generator, defining 1 or more Swagger documents
-            services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo {Title = "My API", Version = "v1"}); });
+            services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" }); });
 
             services.AddMultipleSpaStaticFiles(configuration =>
             {
                 configuration.RootPath = Path.Combine("wwwroot", "blazorapp");
             });
+
+            services.AddMetaWeblog<MetaWeblogProvider>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -179,6 +199,9 @@ namespace OpenBlog.Web
             // specifying the Swagger JSON endpoint.
             app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "OpenBlog API V1"); });
 
+            // Support MetaWeblog API
+            app.UseMetaWeblog("/livewriter");
+
             app.UseMiddleware<InstallCheckMiddleware>();
             app.UseRouting();
 
@@ -191,9 +214,9 @@ namespace OpenBlog.Web
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(name: "HomePage", pattern: "",
-                    new {controller = "Home", action = "Index"});
+                    new { controller = "Home", action = "Index" });
                 endpoints.MapControllerRoute(name: "FormSubmitRoute", pattern: "form-submit",
-                    new {controller = "GenericPage", action = "FormSubmit"});
+                    new { controller = "GenericPage", action = "FormSubmit" });
                 endpoints.MapDynamicControllerRoute<BloggerTransformer>("blog/{category?}/{slug?}");
                 endpoints.MapDynamicControllerRoute<BloggerTransformer>("blog/{year}/{month}/{*slug}");
                 endpoints.MapControllerRoute(name: "MyArea", pattern: "{area:exists}/{controller=Home}/{action=Index}");

@@ -2,7 +2,6 @@
 using Microsoft.Extensions.Options;
 using OpenBlog.Web.Models;
 using OpenBlog.Web.Services.EmailServices;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;

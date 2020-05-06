@@ -6,6 +6,7 @@
 
 <div class="main">
     <div class="top-row px-4">
+        <LoginDisplay />
         <a href="http://blazor.net" target="_blank" class="ml-md-auto">About</a>
     </div>
 
@@ -13,3 +14,29 @@
         @Body
     </div>
 </div>
+
+@inject NavigationManager navigationManager
+@inject ILocalStorageService _localStorage
+@inject AuthenticationStateProvider _authenticationStateProvider
+@inject HttpClient _httpClient
+@using Microsoft.AspNetCore.WebUtilities @*for QueryHelpers*@
+@using System.Net.Http.Headers @*for AuthenticationHeaderValue*@
+@code{
+    protected override void OnInitialized()
+    {
+        Console.WriteLine("Layout OnInitialized");
+        var uri = navigationManager.ToAbsoluteUri(navigationManager.Uri); //you can use IURIHelper for older versions
+
+        if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("Token", out var token))
+        {
+            var token_par = token.First();
+            _localStorage.SetItemAsync("authToken", token_par);
+
+
+            //todo: GetCurrentUserDetailByToken();
+
+            ((ApiAuthenticationStateProvider)_authenticationStateProvider).MarkUserAsAuthenticated($"test@test.com");
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", token_par);
+        }
+    }
+}

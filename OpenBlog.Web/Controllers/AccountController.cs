@@ -1,16 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 using Niusys.Security;
 using OpenBlog.DomainModels;
 using OpenBlog.Web.Models;
 using OpenBlog.Web.WebFramework;
+using OpenBlog.Web.WebFramework.Sessions;
 
 namespace OpenBlog.Web.Controllers
 {
@@ -67,7 +72,7 @@ namespace OpenBlog.Web.Controllers
                 // Refreshing the authentication session should be allowed.
 
                 // 记住cookie默认三天
-                ExpiresUtc = DateTimeOffset.UtcNow.AddDays((int) loginViewModel.RemberDays),
+                ExpiresUtc = DateTimeOffset.UtcNow.AddDays((int)loginViewModel.RemberDays),
                 // The time at which the authentication ticket expires. A 
                 // value set here overrides the ExpireTimeSpan option of 
                 // CookieAuthenticationOptions set with AddCookie.
@@ -102,6 +107,34 @@ namespace OpenBlog.Web.Controllers
 
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return RedirectToRoute("HomePage");
+        }
+
+        [HttpGet]
+        public IActionResult NewAdminLogin([FromServices]IUserSession userSession,[FromServices]IConfiguration configuration)
+        {
+            /*
+             1. 根据当前用户生成Token
+             2. 生成NewAdmin跳转的Url
+             */
+            var jwtConfiguration = configuration.GetSection("Authentication:JwtSetting");
+
+            var currentClaims = User.Claims;
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtConfiguration["JwtSecurityKey"]));
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+            var expiry = DateTime.Now.AddDays(Convert.ToInt32(jwtConfiguration["JwtExpiryInDays"]));
+
+            var token = new JwtSecurityToken(
+                jwtConfiguration["JwtIssuer"],
+                jwtConfiguration["JwtAudience"],
+                currentClaims,
+                expires: expiry,
+                signingCredentials: creds
+            );
+
+            var strToken = new JwtSecurityTokenHandler().WriteToken(token);
+
+            return Redirect($"~/newadmin/?token={strToken}");
         }
     }
 }
