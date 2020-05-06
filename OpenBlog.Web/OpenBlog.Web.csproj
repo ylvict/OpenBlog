@@ -20,6 +20,8 @@
     <PackageReference Include="Serilog.AspNetCore" Version="3.2.0" />
     <PackageReference Include="Serilog.Settings.Configuration" Version="3.1.0" />
     <PackageReference Include="Serilog.Sinks.ColoredConsole" Version="3.0.1" />
+    <PackageReference Include="WilderMinds.MetaWeblog" Version="2.0.1" />
+    <PackageReference Include="WilderMinds.RssSyndication" Version="1.6.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -29,46 +31,4 @@
     <ProjectReference Include="..\OpenBlog.Infrastructure\OpenBlog.Infrastructure.csproj" />
     <ProjectReference Include="..\OpenBlog.Repository.Mongo\OpenBlog.Repository.Mongo.csproj" />
   </ItemGroup>
-
-  <ItemGroup>
-    <Content Update="Views\Profile\Index.cshtml">
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-    <Content Update="Views\Search\Index.cshtml">
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-    <Content Update="Views\Post\_PostListPartial.cshtml">
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-    <Content Update="Views\Shared\_NavMenuRight.cshtml">
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-    <Content Update="Views\Home\Index.cshtml">
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-    <Content Update="Areas\Admin\Views\Post\EditPost.cshtml">
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-  </ItemGroup>
-
-  <ItemGroup>
-    <_ContentIncludedByDefault Remove="Views\Admin\Index.cshtml" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="wwwroot\blazorapp\reader" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="OpenBlog.ClientShared, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\OpenBlog.ClientShared\bin\Debug\netstandard2.1\OpenBlog.ClientShared.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-
 </Project>
