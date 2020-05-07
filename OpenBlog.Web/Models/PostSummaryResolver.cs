@@ -7,7 +7,7 @@ namespace OpenBlog.Web.Models
 {
     public class PostSummaryResolver : IValueResolver<Post, PostPublicListItem, string>
     {
-        private const string HtmlTagFilterRegex = @"<[^>]*>";
+        private const string HtmlTagFilterRegex = @"<[^>]*>|&nbsp;";
         public string Resolve(Post source, PostPublicListItem destination, string destMember, ResolutionContext context)
         {
             if (string.IsNullOrEmpty(source.Summary) && !string.IsNullOrEmpty(source.Content))
