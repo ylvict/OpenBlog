@@ -1,0 +1,11 @@
+﻿@model IEnumerable<SitemapModel>
+@{ Layout = "~/Views/Shared/_Layout.xml.cshtml"; }
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    @foreach (var item in Model)
+    {
+        <sitemap>
+            <loc>@item.loc</loc>
+            <lastmod>@item.lastmod.ToString("yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'fff'Z'")</lastmod>
+        </sitemap>
+    }
+</sitemapindex>

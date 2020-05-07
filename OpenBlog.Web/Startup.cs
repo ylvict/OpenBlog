@@ -99,6 +99,7 @@ namespace OpenBlog.Web
 
             services.RegisterMongoStorage(Configuration);
             services.RegisterEmailService(Configuration);
+            services.RegisterHangire(Configuration, _hostEnvironment);
 
             #endregion
 
@@ -165,7 +166,7 @@ namespace OpenBlog.Web
             #endregion
 
             // Register the Swagger generator, defining 1 or more Swagger documents
-            services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo {Title = "My API", Version = "v1"}); });
+            services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" }); });
 
             services.AddMultipleSpaStaticFiles(configuration =>
             {
@@ -219,7 +220,7 @@ namespace OpenBlog.Web
             app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "OpenBlog API V1"); });
 
             // Support MetaWeblog API
-            app.UseMetaWeblog("/livewriter");
+            app.UseMetaWeblog("/metaweblog");
 
             app.UseMiddleware<InstallCheckMiddleware>();
             app.UseRouting();
@@ -230,12 +231,23 @@ namespace OpenBlog.Web
             // Authorization
             app.UseAuthorization();
 
+            app.ConfigureHangfirePipline(env);
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllerRoute(name: "HomePage", pattern: "",
-                    new {controller = "Home", action = "Index"});
-                endpoints.MapControllerRoute(name: "FormSubmitRoute", pattern: "form-submit",
-                    new {controller = "GenericPage", action = "FormSubmit"});
+                #region Seo Route
+                endpoints.MapControllerRoute(name: "RebotsPolicy", pattern: "robots.txt", defaults: new { controller = "Seo", action = "RobotsPolicy" });
+                endpoints.MapControllerRoute(name: "GeneralSitemap", pattern: "generalsitemap.xml", defaults: new { controller = "Seo", action = "GeneralSitemap" });
+                endpoints.MapControllerRoute(name: "SitemapIndex", pattern: "sitemap.xml", defaults: new { controller = "Seo", action = "Sitemap" });
+                #endregion
+
+                #region Connect
+                endpoints.MapControllerRoute(name: "Wlwmanifest", pattern: "wlwmanifest.xml", new { controller = "Connect", action = "WlwManifest" });
+                endpoints.MapControllerRoute(name: "Rsd", pattern: "rsd.xml", new { controller = "Connect", action = "Rsd" });
+                endpoints.MapControllerRoute(name: "Rsd", pattern: "rss.xml", new { controller = "Connect", action = "Rss" });
+                #endregion
+
+                endpoints.MapControllerRoute(name: "HomePage", pattern: "", new { controller = "Home", action = "Index" });               
+                endpoints.MapControllerRoute(name: "FormSubmitRoute", pattern: "form-submit", new { controller = "GenericPage", action = "FormSubmit" });
                 endpoints.MapDynamicControllerRoute<BloggerTransformer>("blog/{category?}/{slug?}");
                 endpoints.MapDynamicControllerRoute<BloggerTransformer>("blog/{year}/{month}/{*slug}");
                 endpoints.MapControllerRoute(name: "MyArea", pattern: "{area:exists}/{controller=Home}/{action=Index}");

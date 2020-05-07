@@ -33,6 +33,11 @@ namespace OpenBlog.BlazorWasmService
                 throw new ArgumentNullException(nameof(configuration));
             }
 
+            if (!bool.TryParse(Environment.GetEnvironmentVariable("BOOT_BLAZOR_APP"), out var isEnabled) || !isEnabled)
+            {
+                return;
+            }
+
             // Use the options configured in DI (or blank if none was configured). We have to clone it
             // otherwise if you have multiple UseSpa calls, their configurations would interfere with one another.
             var optionsProvider = app.ApplicationServices.GetService<IOptions<MulitSpaOptions>>();

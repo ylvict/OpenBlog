@@ -2,12 +2,14 @@
   "profiles": {
     "AdminWeb": {
       "commandName": "Project",
+      "commandLineArgs": "--pathbase=/newadmin",
       "launchBrowser": true,
-      "inspectUri": "{wsProtocol}://{url.hostname}:{url.port}/_framework/debug/ws-proxy?browser={browserInspectUri}",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "ASPNETCORE_HOSTINGSTARTUPASSEMBLIES": ""
-      }
+      },
+      "applicationUrl": "http://localhost:5001",
+      "inspectUri": "{wsProtocol}://{url.hostname}:{url.port}/_framework/debug/ws-proxy?browser={browserInspectUri}"
     }
   }
 }

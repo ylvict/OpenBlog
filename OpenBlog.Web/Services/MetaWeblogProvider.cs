@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using OpenBlog.Web.WebFramework.Sessions;
 using System;
 using System.Threading.Tasks;
 using WilderMinds.MetaWeblog;
@@ -8,10 +9,12 @@ namespace OpenBlog.Web.Services
     public class MetaWeblogProvider : IMetaWeblogProvider
     {
         private readonly ILogger<MetaWeblogProvider> _logger;
+        private readonly IRequestSession _requestSession;
 
-        public MetaWeblogProvider(ILogger<MetaWeblogProvider> logger)
+        public MetaWeblogProvider(ILogger<MetaWeblogProvider> logger, IRequestSession requestSession)
         {
             _logger = logger;
+            _requestSession = requestSession;
         }
         public Task<int> AddCategoryAsync(string key, string username, string password, NewCategory category)
         {
@@ -97,10 +100,15 @@ namespace OpenBlog.Web.Services
             throw new NotImplementedException();
         }
 
-        public Task<BlogInfo[]> GetUsersBlogsAsync(string key, string username, string password)
+        public async Task<BlogInfo[]> GetUsersBlogsAsync(string key, string username, string password)
         {
             _logger.LogInformation($"Call {nameof(GetUsersBlogsAsync)}");
-            throw new NotImplementedException();
+
+            await Task.CompletedTask;
+            return new BlogInfo[] {
+                new BlogInfo() { blogid = "1", blogName = "Blog A", url = $"{_requestSession.Host}/blog_a" }, 
+                new BlogInfo(){ blogid = "2", blogName = "Blog B", url = $"{_requestSession.Host}/blog_b" } 
+            };
         }
 
         public Task<MediaObjectInfo> NewMediaObjectAsync(string blogid, string username, string password, MediaObject mediaObject)

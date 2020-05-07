@@ -1,0 +1,29 @@
+﻿<manifest xmlns="http://schemas.microsoft.com/wlw/manifest/weblog">
+    <options>
+        <clientType>Metaweblog</clientType>
+        <supportsKeywords>Yes</supportsKeywords>
+        <supportsNewCategories>Yes</supportsNewCategories>
+        <supportsSlug>Yes</supportsSlug>
+        <supportsAuthor>No</supportsAuthor>
+        <supportsGetTags>No</supportsGetTags>
+        <supportsEmbeds>Yes</supportsEmbeds>
+        <supportsExcerpt>Yes</supportsExcerpt>
+        <supportsExtendedEntries>Yes</supportsExtendedEntries>
+        <supportsCustomDate>No</supportsCustomDate>
+        <supportsEmptyTitles>No</supportsEmptyTitles>
+        <supportsAutoUpdate>Yes</supportsAutoUpdate>
+    </options>
+    <weblog>
+        <serviceName>OpenBlog</serviceName>
+        <homepageLinkText>OpenBlog</homepageLinkText>
+        <adminLinkText>管理</adminLinkText>
+        <adminUrl>@($"{Host}/admin")</adminUrl>
+        <postEditingUrl>@($"{Host}/post/editpost?postid={{post-id}}")</postEditingUrl>
+    </weblog>
+    <views>
+        <default>WebLayout</default>
+        <view type="WebLayout" src="@($"{Host}/wlw/weblayout.html")" />
+        <view type="WebPreview" src="@($"{Host}/wlw/weblayout.html")" />
+    </views>
+</manifest>
+@{ Layout = "_Layout.xml"; }

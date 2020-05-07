@@ -1,14 +1,17 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@Title</title>
-    <meta type="keywords" value="@Keywords"/>
-    <meta type="description" value="@Description"/>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" asp-append-version="true"/>
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/>
-    <link rel="canonical" href="@CanonicalUrl"/>
+    <meta type="keywords" value="@Keywords" />
+    <meta type="description" value="@Description" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="canonical" href="@CanonicalUrl" />
+    <link type="application/rss+xml" rel="rss" href="~/rss.xml" />
+    <link type="application/rsd+xml" rel="EditURI" href="~/rsd.xml" />
+    <link type="application/wlwmanifest+xml" rel="wlwmanifest" href="~/wlwmanifest.xml" />
     @await RenderSectionAsync("Styles", required: false)
 </head>
 <body>
