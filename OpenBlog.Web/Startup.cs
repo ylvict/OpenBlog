@@ -43,6 +43,12 @@ namespace OpenBlog.Web
         public const string ProxiedClient = "ProxiedClient";
     }
 
+    public static class AuthenticateSchemas
+    {
+        public const string Cookie = CookieAuthenticationDefaults.AuthenticationScheme;
+        public const string JwtBearer = "JwtBearer";
+    }
+
     public class Startup
     {
         private readonly IHostEnvironment _hostEnvironment;
@@ -118,14 +124,14 @@ namespace OpenBlog.Web
 
             // Cookie Config
             services.AddScoped<CustomCookieAuthenticationEvents>();
-            var authenticationBuilder = services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme);
-            authenticationBuilder.AddCookie(options =>
+            var authenticationBuilder = services.AddAuthentication(AuthenticateSchemas.Cookie);
+            authenticationBuilder.AddCookie(AuthenticateSchemas.Cookie, options =>
             {
                 options.Cookie.Name = "openblog.auth";
                 options.EventsType = typeof(CustomCookieAuthenticationEvents);
             });
 
-            authenticationBuilder.AddJwtBearer(options =>
+            authenticationBuilder.AddJwtBearer(AuthenticateSchemas.JwtBearer, options =>
             {
                 var jwtConfiguration = Configuration.GetSection("Authentication:JwtSetting");
                 options.TokenValidationParameters = new TokenValidationParameters

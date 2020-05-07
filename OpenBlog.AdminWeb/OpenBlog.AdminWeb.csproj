@@ -20,4 +20,10 @@
     <ProjectReference Include="..\OpenBlog.ClientShared\OpenBlog.ClientShared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Update="Pages\Logout.razor">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+    </Content>
+  </ItemGroup>
+
 </Project>

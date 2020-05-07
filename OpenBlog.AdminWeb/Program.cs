@@ -6,6 +6,7 @@ using System;
 using System.Net.Http;
 using System.Reflection;
 using System.Threading.Tasks;
+using OpenBlog.AdminWeb.Services;
 
 namespace OpenBlog.AdminWeb
 {
@@ -22,7 +23,8 @@ namespace OpenBlog.AdminWeb
             services.AddAuthorizationCore();
             services.AddScoped<ApiAuthenticationStateProvider>();
             services.AddScoped<AuthenticationStateProvider>(provider => provider.GetRequiredService<ApiAuthenticationStateProvider>());
-
+            services.AddScoped<IAuthService, AuthService>();
+            
             builder.RootComponents.Add<App>("app");
 
             builder.Services.AddTransient(sp => new HttpClient

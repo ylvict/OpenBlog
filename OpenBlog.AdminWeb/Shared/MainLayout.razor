@@ -1,42 +1,56 @@
 ﻿@inherits LayoutComponentBase
+<AuthorizeView>
+    <Authorized>
+        <div class="sidebar">
+            <NavMenu/>
+        </div>
 
-<div class="sidebar">
-    <NavMenu />
-</div>
+        <div class="main">
+            <div class="top-row px-4">
+                <LoginDisplay/>
+                <a href="http://blazor.net" target="_blank" class="ml-md-auto">About</a>
+            </div>
 
-<div class="main">
-    <div class="top-row px-4">
-        <LoginDisplay />
-        <a href="http://blazor.net" target="_blank" class="ml-md-auto">About</a>
-    </div>
-
-    <div class="content px-4">
-        @Body
-    </div>
-</div>
-
+            <div class="content px-4">
+                Here is body: @Body
+            </div>
+        </div>
+    </Authorized>
+    <NotAuthorized>
+        <h1>Acces Denied</h1>
+        @* @Body *@
+    </NotAuthorized>
+</AuthorizeView>
 @inject NavigationManager navigationManager
 @inject ILocalStorageService _localStorage
 @inject AuthenticationStateProvider _authenticationStateProvider
 @inject HttpClient _httpClient
-@using Microsoft.AspNetCore.WebUtilities @*for QueryHelpers*@
-@using System.Net.Http.Headers @*for AuthenticationHeaderValue*@
+@using Microsoft.AspNetCore.WebUtilities
+@*for QueryHelpers*@
+@using System.Net.Http.Headers
+@*for AuthenticationHeaderValue*@
+
 @code{
-    protected override void OnInitialized()
+
+    protected override async void OnInitialized()
     {
         Console.WriteLine("Layout OnInitialized");
         var uri = navigationManager.ToAbsoluteUri(navigationManager.Uri); //you can use IURIHelper for older versions
 
         if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("Token", out var token))
         {
-            var token_par = token.First();
-            _localStorage.SetItemAsync("authToken", token_par);
+            var tokenPar = token.First();
+    // validate token
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", tokenPar);
+            var userLoginResult = await _httpClient.GetFromJsonAsync<UserDetailInfo>("/api/account/current_user");
 
-
-            //todo: GetCurrentUserDetailByToken();
-
-            ((ApiAuthenticationStateProvider)_authenticationStateProvider).MarkUserAsAuthenticated($"test@test.com");
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", token_par);
+    // set authentication info
+            if (userLoginResult != null)
+            {
+                await _localStorage.SetItemAsync("authToken", tokenPar);
+                ((ApiAuthenticationStateProvider) _authenticationStateProvider).MarkUserAsAuthenticated(userLoginResult.Email);
+            }
         }
     }
+
 }

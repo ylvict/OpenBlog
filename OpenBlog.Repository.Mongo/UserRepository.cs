@@ -29,7 +29,7 @@ namespace OpenBlog.Repository.Mongo
             return userEntity.Sysid.ToString();
         }
 
-        public async Task<User> GetUser(string userId)
+        public async Task<User> GetUserAsync(string userId)
         {
             var userEntity = await GetUserInternal(userId.SafeToObjectId());
             return _mapper.Map<User>(userEntity);
