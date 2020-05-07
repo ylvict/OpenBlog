@@ -108,3 +108,14 @@ BM0XvkdXNIB7XpJ5OVWNtL1ku5GFl07wyI5aVA6TVKg=
 dotnet publish --output OpenBlog.Web/wwwroot/blazorapp/UserCenterWebApp OpenBlog.UserCenterWeb/OpenBlog.UserCenterWeb.csproj
 dotnet publish --output OpenBlog.Web/wwwroot/blazorapp/AdminWebApp OpenBlog.AdminWeb/OpenBlog.AdminWeb.csproj
 ```
+
+## 项目说明
+
+### OpenBlog.Web
+服务器端(前端页面/后端页面/API等)
+
+### OpenBlog.UserCenterWeb
+用户Profile对应的前端
+
+### OpenBlog.AdminWeb
+管理后台

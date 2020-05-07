@@ -1,0 +1,29 @@
+﻿@model IEnumerable<SitemapUrlModel>
+@{ Layout = "~/Views/Shared/_Layout.xml.cshtml"; }
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
+        xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">
+    @foreach (var pageItem in Model)
+    {
+        <url>
+            <loc>@pageItem.loc</loc>
+            <lastmod>@pageItem.lastmod.ToString("u").Replace(" ", "T")</lastmod>
+            @if (!string.IsNullOrEmpty(pageItem.changefreq))
+            {<changefreq>@pageItem.changefreq</changefreq>}
+            @if (pageItem.priority > 0f)
+            {<priority>@pageItem.priority.ToString("0.0")</priority>}
+            @if (!string.IsNullOrWhiteSpace(pageItem.image))
+            {<image:image><image:loc>@pageItem.image</image:loc></image:image>}
+            @if (!string.IsNullOrWhiteSpace(pageItem.v_content_loc))
+            {
+                <video:video>
+                    <video:content_loc>@pageItem.v_content_loc</video:content_loc>
+                    <video:player_loc allow_embed="yes" autoplay="ap=1">@pageItem.v_player_loc</video:player_loc>
+                    <video:thumbnail_loc>@pageItem.v_thumbnail_loc</video:thumbnail_loc>
+                    <video:title>@pageItem.v_title</video:title>
+                    <video:description>@pageItem.v_description</video:description>
+                </video:video>
+            }
+        </url>
+    }
+</urlset>

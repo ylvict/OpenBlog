@@ -25,7 +25,7 @@ namespace OpenBlog.Web.Controllers
 Disallow: /account/*
 Disallow: /cdn-cgi/*
 ");
-            sbRebots.AppendLine(string.Format("Sitemap: {0}/sitemap.xml", _requestSession.Host));
+            sbRebots.AppendLine($"Sitemap: {_requestSession.Host}/sitemap.xml");
             return Content(sbRebots.ToString(), "text/plain");
         }
 
@@ -39,16 +39,10 @@ Disallow: /cdn-cgi/*
             Response.ContentType = "text/xml";
             var sitemapList = new List<SitemapModel>
             {
-                new SitemapModel() { loc = string.Format("{0}/{1}.xml", _requestSession.Host, "generalsitemap"), lastmod = DateTime.UtcNow.Date },
-                new SitemapModel() { loc = string.Format("{0}/{1}.xml", _requestSession.Host, "chinese/simplified/sitemap"), lastmod = DateTime.UtcNow.Date },
-                new SitemapModel() { loc = string.Format("{0}/{1}.xml", _requestSession.Host, "chinese/traditional/sitemap"), lastmod = DateTime.UtcNow.Date }
+                new SitemapModel() { loc = $"{_requestSession.Host}/{"generalsitemap"}.xml", lastmod = DateTime.UtcNow.Date },
+                new SitemapModel() { loc = $"{_requestSession.Host}/{"blog/sitemap"}.xml", lastmod = DateTime.UtcNow.Date }
             };
             return View("SitemapIndex", sitemapList);
-        }
-
-        public ActionResult Links()
-        {
-            return View();
         }
 
         [HttpGet]
